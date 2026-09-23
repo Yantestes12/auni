@@ -1913,7 +1913,7 @@
          ========================================================================== -->
     <script>
         // ── CONTROLE AUTOMÁTICO DE VERSÃO & LIMPEZA DE CACHE ──
-        const APP_BUILD_VERSION = '2026.09.23_auni_v13_bloqueio_duplicidade_e_logo_ficha';
+        const APP_BUILD_VERSION = '2026.09.23_auni_v14_parentesco_fix';
         try {
             const lastVer = localStorage.getItem('auni_app_version');
             if (lastVer !== APP_BUILD_VERSION) {
@@ -2566,7 +2566,7 @@
                 preencher('mat_resp_cpf', formatarCPF(mat.resp_cpf));
                 preencher('mat_resp_nome', mat.resp_nome);
                 preencher('mat_resp_whatsapp', formatarTelefoneValor(mat.resp_whatsapp));
-                preencherSelect('mat_resp_parentesco', mat.resp_parentesco);
+                preencherSelect('mat_resp_parentesco', mat.grau_parentesco || mat.resp_parentesco || mat.parentesco);
 
                 if (mat.resp_nome) {
                     const statusEl = document.getElementById('respCpfStatus');
@@ -2814,7 +2814,8 @@
                 if (ultimaMat.resp_cpf) preencher('mat_resp_cpf', formatarCPF(ultimaMat.resp_cpf));
                 if (ultimaMat.resp_nome) preencher('mat_resp_nome', ultimaMat.resp_nome);
                 if (ultimaMat.resp_whatsapp) preencher('mat_resp_whatsapp', formatarTelefoneValor(ultimaMat.resp_whatsapp));
-                if (ultimaMat.resp_parentesco) preencherSelect('mat_resp_parentesco', ultimaMat.resp_parentesco);
+                const pAnt = ultimaMat.grau_parentesco || ultimaMat.resp_parentesco || ultimaMat.parentesco;
+                if (pAnt) preencherSelect('mat_resp_parentesco', pAnt);
                 if (ultimaMat.tamanho_camisa) preencherSelect('mat_camisa', ultimaMat.tamanho_camisa);
                 if (ultimaMat.tamanho_calca) preencherSelect('mat_bermuda', ultimaMat.tamanho_calca);
                 if (ultimaMat.tamanho_calcado) preencherSelect('mat_calcado', ultimaMat.tamanho_calcado);
@@ -3060,6 +3061,11 @@
                 payload.cidade_treino = document.getElementById('select_cidade_filtro')?.value || '';
                 delete payload.email_confirm;
                 if (payload.resp_cpf) payload.resp_cpf = payload.resp_cpf.replace(/\D/g, '');
+
+                // Parentesco do Responsável: Garante envio com ambas as chaves para N8N e Supabase
+                const parentescoVal = document.getElementById('mat_resp_parentesco')?.value || payload.resp_parentesco || payload.grau_parentesco || '';
+                payload.grau_parentesco = parentescoVal;
+                payload.resp_parentesco = parentescoVal;
 
                 const isEdicao = (payload.modo_edicao === 'true' || payload.modo_edicao === true) && Boolean(payload.id);
 
@@ -3453,7 +3459,7 @@
 
             const nResp = d.resp_nome || '';
             const cResp = formatarCPF(d.resp_cpf || '');
-            const parResp = d.resp_parentesco || '';
+            const parResp = d.grau_parentesco || d.resp_parentesco || d.parentesco || (nResp ? 'Responsável Legal' : '');
 
             const qrUrl = 'https://auni.plataformaintegra.com.br/autenticador.html?id=' + numMatricula + '&inst=auni';
             const qrImg = 'https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=' + encodeURIComponent(qrUrl);
@@ -3612,7 +3618,7 @@
                         <div class="grid-3">
                             <div class="f-item"><span class="f-lbl">Responsável:</span> ${nResp}</div>
                             <div class="f-item"><span class="f-lbl">CPF:</span> ${cResp}</div>
-                            <div class="f-item"><span class="f-lbl">Parentesco:</span> ${parResp}</div>
+                            <div class="f-item"><span class="f-lbl">Parentesco:</span> ${parResp || 'Responsável Legal'}</div>
                         </div>
                     </div>` : ''}
 
