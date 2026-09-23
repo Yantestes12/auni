@@ -640,6 +640,12 @@
             border-color: #eee9e0;
         }
 
+        .project-tile.enrolled-active {
+            border-color: #86efac;
+            background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08);
+        }
+
         .badge-age-tag {
             font-size: 11px;
             font-weight: 700;
@@ -1907,7 +1913,7 @@
          ========================================================================== -->
     <script>
         // ── CONTROLE AUTOMÁTICO DE VERSÃO & LIMPEZA DE CACHE ──
-        const APP_BUILD_VERSION = '2026.09.23_auni_v12_fix_print_button';
+        const APP_BUILD_VERSION = '2026.09.23_auni_v13_bloqueio_duplicidade_e_logo_ficha';
         try {
             const lastVer = localStorage.getItem('auni_app_version');
             if (lastVer !== APP_BUILD_VERSION) {
@@ -2652,12 +2658,42 @@
             const temIdade = (idade !== null && idade !== undefined && !isNaN(idade));
             const foraDaFaixa = temIdade && (idade < minIdade || idade > maxIdade);
 
+            // Verificação de segurança: participante já possui inscrição nesta iniciativa
+            const jaInscrito = (currentMatriculasList && currentMatriculasList.length > 0);
+            const matExistente = jaInscrito ? currentMatriculasList[0] : null;
+            const matIdExistente = matExistente ? (matExistente.id || matExistente.matricula || '') : '';
+
             let badgeFaixaHtml = '';
             let btnHtml = '';
             let cardClass = 'project-tile';
             let avisoIncompativelHtml = '';
 
-            if (foraDaFaixa) {
+            if (jaInscrito) {
+                cardClass += ' enrolled-active';
+                badgeFaixaHtml = `
+                    <span class="badge-age-tag" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0; font-weight: 700;">
+                        <i data-lucide="check-circle-2" style="width: 13px; height: 13px; display: inline; vertical-align: middle; margin-right: 4px;"></i>
+                        Inscrição Já Realizada (#${matIdExistente})
+                    </span>
+                `;
+                btnHtml = `
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <button type="button" class="btn-choose-project" disabled style="background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; cursor: default; font-weight: 700;">
+                            <span style="display: flex; align-items: center; gap: 8px;">
+                                <i data-lucide="check-circle" style="width: 17px; height: 17px; color: #16a34a;"></i>
+                                Matrícula Confirmada (#${matIdExistente})
+                            </span>
+                            <span style="font-size: 11px; font-weight: 800; color: #047857; background: #dcfce7; padding: 3px 8px; border-radius: 999px;">JÁ INSCRITO</span>
+                        </button>
+                    </div>
+                `;
+                avisoIncompativelHtml = `
+                    <div style="margin-top: 12px; padding: 10px 14px; background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 10px; font-size: 12.5px; color: #166534; display: flex; align-items: flex-start; gap: 8px; line-height: 1.45;">
+                        <i data-lucide="info" style="width: 17px; height: 17px; flex-shrink: 0; margin-top: 2px; color: #16a34a;"></i>
+                        <span>Você já está oficialmente matriculado nesta iniciativa (<strong>Inscrição #${matIdExistente}</strong>). Para emitir sua ficha oficial em PDF ou atualizar suas informações, utilize a seção <strong>Minhas Inscrições na AUNI</strong> logo abaixo.</span>
+                    </div>
+                `;
+            } else if (foraDaFaixa) {
                 cardClass += ' disabled';
                 badgeFaixaHtml = `
                     <span class="badge-age-tag" style="background: #fee2e2; color: #b91c1c; border-color: #fca5a5;">
@@ -2717,6 +2753,13 @@
 
         // ── INICIAR NOVA INSCRIÇÃO ──
         function iniciarNovaInscricao() {
+            // Bloqueio de duplicidade: não permite iniciar nova inscrição se já possui matrícula ativa
+            if (currentMatriculasList && currentMatriculasList.length > 0) {
+                const matId = currentMatriculasList[0]?.id || currentMatriculasList[0]?.matricula || '';
+                alert(`Você já possui inscrição oficial neste projeto (Matrícula #${matId}). Cada participante pode ter apenas uma matrícula ativa no projeto. Para fazer alterações em seus dados, utilize o botão "Editar Meus Dados" na seção de Minhas Inscrições.`);
+                return;
+            }
+
             // Verificação de segurança de faixa etária
             if (currentStudentData && currentStudentData.idade !== null && currentStudentData.idade !== undefined) {
                 if (currentStudentData.idade < 7 || currentStudentData.idade > 20) {
@@ -3428,35 +3471,87 @@
                     <title>${tituloArquivo}</title>
                     <style>
                         @page { size: A4; margin: 8mm 10mm; }
-                        * { box-sizing: border-box; margin: 0; padding: 0; }
-                        body { font-family: sans-serif; font-size: 9pt; color: #000; line-height: 1.3; background: #fff; padding: 10px; }
+                        * {
+                            box-sizing: border-box;
+                            margin: 0;
+                            padding: 0;
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                            color-adjust: exact !important;
+                        }
+                        body {
+                            font-family: sans-serif;
+                            font-size: 9pt;
+                            color: #000;
+                            line-height: 1.3;
+                            background: #fff;
+                            padding: 10px;
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                            color-adjust: exact !important;
+                        }
                         .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2.5px solid #1c3388; padding-bottom: 6px; margin-bottom: 10px; }
                         .logo-box { display: flex; align-items: center; gap: 8px; }
-                        .logo-auni-dark { background: #1c3388; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; }
+                        .logo-auni-dark {
+                            background: #1c3388 !important;
+                            background-color: #1c3388 !important;
+                            border: 2px solid #1c3388 !important;
+                            padding: 4px 10px;
+                            border-radius: 6px;
+                            display: inline-flex;
+                            align-items: center;
+                            justify-content: center;
+                            -webkit-print-color-adjust: exact !important;
+                            print-color-adjust: exact !important;
+                            color-adjust: exact !important;
+                        }
                         .logo-box img { max-height: 36px; }
+                        .logo-auni-dark img {
+                            max-height: 36px;
+                            display: block;
+                            filter: drop-shadow(0 0 1px #12225e);
+                        }
                         .title-right { text-align: right; }
                         .main-title { font-size: 13pt; font-weight: 800; color: #1c3388; }
                         .sub-title { font-size: 8.5pt; color: #475569; font-weight: 600; }
-                        .box { border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 8px; padding: 6px 10px; background: #fdfdfd; }
+                        .box { border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 8px; padding: 6px 10px; background: #fdfdfd; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
                         .box-title { font-size: 8.5pt; font-weight: 800; color: #1c3388; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 6px; text-transform: uppercase; }
                         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px 10px; }
                         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
                         .f-item { font-size: 8.5pt; }
                         .f-lbl { font-weight: 700; color: #1c3388; }
-                        .qr-row { display: flex; align-items: center; gap: 12px; background: #f0faff; border: 1px dashed #1c3388; padding: 6px 10px; border-radius: 6px; margin-top: 6px; }
+                        .qr-row { display: flex; align-items: center; gap: 12px; background: #f0faff; border: 1px dashed #1c3388; padding: 6px 10px; border-radius: 6px; margin-top: 6px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
                         .qr-row img { width: 54px; height: 54px; }
                         .page-break { page-break-before: always; }
-                        @media print { .no-print { display: none !important; } }
+                        @media print {
+                            * {
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                                color-adjust: exact !important;
+                            }
+                            body {
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
+                            .logo-auni-dark {
+                                background: #1c3388 !important;
+                                background-color: #1c3388 !important;
+                                border: 2px solid #1c3388 !important;
+                                -webkit-print-color-adjust: exact !important;
+                                print-color-adjust: exact !important;
+                            }
+                            .no-print { display: none !important; }
+                        }
                     </style>
                 </head>
                 <body>
                     <div class="header">
                         <div class="logo-box">
-                            <div class="logo-auni-dark">
-                                <img src="https://plataformaintegra.com.br/logo_auni.png" alt="AUNI">
+                            <div class="logo-auni-dark" style="background:#1c3388 !important;background-color:#1c3388 !important;border:2px solid #1c3388 !important;border-radius:6px;padding:4px 10px;display:inline-flex;align-items:center;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
+                                <img src="https://plataformaintegra.com.br/logo_auni.png" alt="AUNI" style="max-height:36px;display:block;">
                             </div>
-                            <span style="font-weight:bold;color:#74d4fd;">×</span>
-                            <img src="https://plataformaintegra.com.br/logo_integra_simbolo.gif" alt="INTEGRA">
+                            <span style="font-weight:bold;color:#74d4fd;font-size:14pt;">×</span>
+                            <img src="https://plataformaintegra.com.br/logo_integra_simbolo.gif" alt="INTEGRA" style="max-height:36px;">
                         </div>
                         <div class="title-right">
                             <div class="main-title">FICHA OFICIAL DE MATRÍCULA</div>
@@ -3534,37 +3629,50 @@
 
                     <div class="header">
                         <div class="logo-box">
-                            <div class="logo-auni-dark">
-                                <img src="https://plataformaintegra.com.br/logo_auni.png" alt="AUNI">
+                            <div class="logo-auni-dark" style="background:#1c3388 !important;background-color:#1c3388 !important;border:2px solid #1c3388 !important;border-radius:6px;padding:4px 10px;display:inline-flex;align-items:center;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
+                                <img src="https://plataformaintegra.com.br/logo_auni.png" alt="AUNI" style="max-height:36px;display:block;">
                             </div>
-                            <span style="font-weight:bold;color:#74d4fd;">×</span>
-                            <img src="https://plataformaintegra.com.br/logo_integra_simbolo.gif" alt="INTEGRA">
+                            <span style="font-weight:bold;color:#74d4fd;font-size:14pt;">×</span>
+                            <img src="https://plataformaintegra.com.br/logo_integra_simbolo.gif" alt="INTEGRA" style="max-height:36px;">
                         </div>
                         <div class="title-right">
-                            <div class="main-title">DECLARAÇÃO DE RESPONSABILIDADE E TERMO DE PARTICIPAÇÃO</div>
-                            <div class="sub-title">Associação Nacional União (AUNI)</div>
+                            <div class="main-title" style="font-size: 11pt;">DECLARAÇÃO DE RESPONSABILIDADE, PARTICIPAÇÃO E AUTORIZAÇÃO</div>
+                            <div class="sub-title">ASSOCIAÇÃO NACIONAL UNIÃO – AUNI</div>
                         </div>
                     </div>
 
-                    <div class="box" style="font-size:7.5pt;line-height:1.3;color:#333;text-align:justify;">
-                        <p style="margin-bottom:6px;">A presente Declaração de Responsabilidade estabelece as condições, direitos e deveres relacionados à participação nas atividades esportivas gratuitas promovidas pela Associação Nacional União – AUNI, aplicando-se aos participantes e seus respectivos responsáveis legais.</p>
+                    <div class="box" style="font-size: 6.8pt; line-height: 1.25; color: #1e293b; text-align: justify; margin-bottom: 6px; padding: 6px 9px;">
+                        <p style="margin-bottom: 5px;">A presente <strong>Declaração de Responsabilidade, Participação e Autorização</strong> estabelece as condições aplicáveis à participação nas atividades, projetos esportivos, oficinas e eventos gratuitos promovidos ou executados pela <strong>Associação Nacional União – AUNI</strong> (pessoa jurídica de direito privado sem fins lucrativos). Aplica-se aos participantes e, no caso de crianças e adolescentes, aos seus pais ou responsáveis legais, que realizam a matrícula e manifestam o aceite em seu nome, observada a legislação brasileira aplicável.</p>
 
-                        <p style="margin-bottom:4px;"><strong>1. AUTORIZAÇÃO PARA PARTICIPAÇÃO:</strong> Autorizo a participação do(a) aluno(a) nas atividades esportivas e educacionais promovidas pela AUNI.</p>
-                        <p style="margin-bottom:6px;padding-left:10px;">1º Fica autorizada a participação em treinos, eventos, apresentações e competições vinculadas à iniciativa. 2º Atividades externas serão previamente comunicadas. 3º Em caso de emergência, a equipe técnica está autorizada a prestar primeiros socorros e encaminhar para assistência médica.</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px;">
+                            <div>
+                                <p style="margin-bottom: 4px;"><strong>1. AUTORIZAÇÃO E CONDIÇÕES DE PARTICIPAÇÃO:</strong> Autorizo a participação do(a) aluno(a) nas atividades esportivas, oficinas, palestras, eventos e competições promovidas pela AUNI. A participação é gratuita e condicionada às regras, horários, faixas etárias e frequência mínima definida para cada projeto.</p>
 
-                        <p style="margin-bottom:4px;"><strong>2. APTIDÃO, SEGURANÇA E RISCOS:</strong> Declaro que as informações de saúde são verdadeiras e que o(a) aluno(a) encontra-se apto(a) para práticas esportivas.</p>
-                        <p style="margin-bottom:6px;padding-left:10px;">1º Atestados ou laudos médicos poderão ser solicitados a qualquer tempo. 2º Ciente dos riscos habituais à prática esportiva. 3º A instituição adotará medidas preventivas e de segurança em todas as sessões.</p>
+                                <p style="margin-bottom: 4px;"><strong>2. PARTICIPAÇÃO DE MENORES (ECA):</strong> No caso de menor de 18 anos, a matrícula é realizada pelo responsável legal nos termos da Lei nº 8.069/1990 (ECA). A saída dos locais de atividade observará as normas de acompanhamento e segurança do núcleo.</p>
 
-                        <p style="margin-bottom:4px;"><strong>3. USO INSTITUCIONAL DE IMAGEM:</strong> Autorizo, de forma gratuita, o uso da imagem e voz do participante para fins institucionais, divulgação das atividades e prestação de contas.</p>
-                        <p style="margin-bottom:6px;padding-left:10px;">1º A autorização é dada pelo responsável quando o participante for menor. 2º Uso estritamente não comercial e institucional.</p>
+                                <p style="margin-bottom: 4px;"><strong>3. SAÚDE, APTIDÃO E PRIMEIROS SOCORROS:</strong> O declarante atesta que as informações de saúde são autênticas e que o aluno está apto para práticas esportivas. Ciente dos riscos habituais à atividade física (quedas, contusões e esforço). Em situações de emergência, a equipe técnica está autorizada a prestar primeiros socorros e acionar assistência médica de urgência.</p>
 
-                        <p style="margin-bottom:4px;"><strong>4. PROTEÇÃO DE DADOS (LGPD):</strong> Ciente de que os dados serão tratados para organização das turmas, relatórios institucionais e cumprimento legal, nos termos da Lei nº 13.709/2018.</p>
+                                <p style="margin-bottom: 4px;"><strong>4. USO INSTITUCIONAL DE IMAGEM E VOZ:</strong> Autorizo, de forma gratuita, o uso da imagem e voz do participante exclusivamente para relatórios, prestação de contas públicas perante parceiros/financiadores e divulgação institucional da AUNI, vedada a exploração comercial.</p>
 
-                        <p style="margin-bottom:4px;"><strong>5. JANELA DE EDIÇÃO E 6. DISPOSIÇÕES FINAIS:</strong> É assegurado o direito de editar dados cadastrais por até 6 horas após o envio. Declaro que as informações são autênticas. LI, COMPREENDI E ACEITO todos os termos.</p>
+                                <p style="margin-bottom: 4px;"><strong>5. PROTEÇÃO DE DADOS PESSOAIS (LGPD):</strong> O tratamento dos dados cadastrais e de saúde observa rigorosamente a Lei nº 13.709/2018 para finalidades de organização de turmas, controle de frequência, segurança e prestação de contas aos órgãos públicos e parceiros.</p>
+                            </div>
+
+                            <div>
+                                <p style="margin-bottom: 4px;"><strong>6. FREQUÊNCIA, CONDUTA E CONVIVÊNCIA:</strong> O participante compromete-se a cumprir os horários, zelar pelos materiais e manter conduta de respeito mútuo com todos. São vedados atos de violência, discriminação ou indisciplina, sob pena de advertência ou desligamento da vaga.</p>
+
+                                <p style="margin-bottom: 4px;"><strong>7. MATERIAIS E FARDAMENTO:</strong> Os uniformes e materiais eventualmente disponibilizados devem ser conservados com zelo para uso exclusivo durante as atividades do projeto.</p>
+
+                                <p style="margin-bottom: 4px;"><strong>8. ATIVIDADES EXTERNAS:</strong> Atividades externas do cronograma oficial serão previamente informadas, aplicando-se as mesmas exigências e condições de segurança institucional.</p>
+
+                                <p style="margin-bottom: 4px;"><strong>9. RESPONSABILIDADES:</strong> A AUNI não responde por fatos decorrentes de dados falsos ou omissões do declarante, permanecendo vigentes as responsabilidades de cada parte.</p>
+
+                                <p style="margin-bottom: 4px;"><strong>10. ACEITE ELETRÔNICO E DECLARAÇÃO FINAL:</strong> O aceite eletrônico no formulário da plataforma possui plena validade jurídica. Declaro que todas as informações são verdadeiras, que li e compreendi as condições desta Declaração e aceito integralmente seus termos. <strong>LI, COMPREENDI E ACEITO.</strong></p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;">
-                        <div style="border: 1.5px dashed #1c3388; background: #f0faff; padding: 8px; border-radius: 6px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+                        <div style="border: 1.5px dashed #1c3388; background: #f0faff; padding: 7px 8px; border-radius: 6px;">
                             <div style="font-weight: 800; font-size: 8.5pt; color: #1c3388; margin-bottom: 4px;">✓ RESPONSÁVEL: — STATUS: VALIDADA</div>
                             <ul style="list-style: none; font-size: 7.5pt; color: #333; line-height: 1.4;">
                                 <li>• LGPD ACEITO: ${createdAtStr}</li>
