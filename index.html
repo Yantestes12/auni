@@ -2265,43 +2265,95 @@
             }
         }
 
+        let _isConsultandoCPF = false;
+        let _lastCpfConsultado = null;
+        let _lastCpfCache = null;
+
+        // Utilitário infalível: fetch com timeout que cobre conexão E parsing do JSON
+        async function fetchJsonWithTimeout(url, opts = {}, timeoutMs = 3000) {
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+            try {
+                const resp = await fetch(url, { ...opts, signal: ctrl.signal });
+                if (!resp.ok) return null;
+                const data = await resp.json();
+                return data;
+            } catch (err) {
+                return null;
+            } finally {
+                clearTimeout(timer);
+            }
+        }
+
         // ── Executar Consulta do CPF ──
         async function executarConsultaCPF(cpfNum) {
-            mostrarFeedback('loading', 'Consultando CPF e inscrições oficiais na AUNI...');
-            document.getElementById('btnConsultarCPF').disabled = true;
+            if (_isConsultandoCPF) return;
 
-            try {
-                // 1. Consulta dados do aluno
-                const url = `${API.consultarCPF}?cpf=${encodeURIComponent(cpfNum)}&instituicao=AUNI&instituto=AUNI`;
-                let dadosAluno = null;
-
-                try {
-                    const ctrlCPF = new AbortController();
-                    const timerCPF = setTimeout(() => ctrlCPF.abort(), 3500);
-                    const resp = await fetch(url, { signal: ctrlCPF.signal });
-                    clearTimeout(timerCPF);
-                    const json = await resp.json();
-                    const item = Array.isArray(json) ? json[0] : json;
-                    dadosAluno = item?.result || item?.dados || item;
-                } catch(e) {
-                    console.warn('Consulta webhook CPF demorou, prosseguindo...');
+            // Se o mesmo CPF já foi consultado e o aluno só está confirmando a data de nascimento:
+            if (_lastCpfConsultado === cpfNum && _lastCpfCache) {
+                const inputNascNovo = document.getElementById('inputNascNovo');
+                const dataDigitada = inputNascNovo ? inputNascNovo.value.trim() : '';
+                if (!dataDigitada) {
+                    mostrarFeedback('error', 'Por favor, informe a data de nascimento.');
+                    if (inputNascNovo) inputNascNovo.focus();
+                    return;
+                }
+                const idadeVal = calcularIdade(dataDigitada);
+                if (idadeVal === null || isNaN(idadeVal) || idadeVal < 0 || idadeVal > 120) {
+                    mostrarFeedback('error', 'Por favor, informe uma data de nascimento válida.');
+                    if (inputNascNovo) inputNascNovo.focus();
+                    return;
                 }
 
-                // 2. Busca histórico de matrículas ativas na AUNI
+                // Prossegue INSTANTANEAMENTE sem refazer consultas na rede!
+                const { dadosAluno, matriculasEncontradas, nomeAluno, temNomeBanco } = _lastCpfCache;
+                currentMatriculasList = matriculasEncontradas;
+                currentStudentData = {
+                    cpf: cpfNum,
+                    nome: nomeAluno,
+                    data_nascimento: dataDigitada,
+                    idade: idadeVal,
+                    dados_recentes: dadosAluno?.dados_recentes || {},
+                    projetos_inscritos_ids: dadosAluno?.projetos_inscritos_ids || matriculasEncontradas.map(m => m.projeto_id).filter(Boolean)
+                };
+
+                mostrarFeedback('success', `Data confirmada (${idadeVal} anos)! Redirecionando...`);
+                setTimeout(() => apresentarPainelDoAluno(), 200);
+                return;
+            }
+
+            _isConsultandoCPF = true;
+            mostrarFeedback('loading', 'Consultando CPF e inscrições oficiais na AUNI...');
+            const btnConsultar = document.getElementById('btnConsultarCPF');
+            if (btnConsultar) btnConsultar.disabled = true;
+
+            try {
+                // 1. Consulta dados do aluno e histórico de matrículas em paralelo blindado
+                const urlCPF = `${API.consultarCPF}?cpf=${encodeURIComponent(cpfNum)}&instituicao=AUNI&instituto=AUNI`;
+                const urlMat = `${API.buscarMatriculas}&cpf=${encodeURIComponent(cpfNum)}`;
+
+                const [resCPF, resMat] = await Promise.allSettled([
+                    fetchJsonWithTimeout(urlCPF, {}, 3500),
+                    fetchJsonWithTimeout(urlMat, {}, 3000)
+                ]);
+
+                let dadosAluno = null;
+                if (resCPF.status === 'fulfilled' && resCPF.value) {
+                    const json = resCPF.value;
+                    const item = Array.isArray(json) ? json[0] : json;
+                    dadosAluno = item?.result || item?.dados || item;
+                    if (item?.projetos_inscritos_ids) dadosAluno.projetos_inscritos_ids = item.projetos_inscritos_ids;
+                    if (item?.dados_recentes) dadosAluno.dados_recentes = item.dados_recentes;
+                }
+
                 let matriculasEncontradas = [];
-                try {
-                    const ctrlMat = new AbortController();
-                    const timerMat = setTimeout(() => ctrlMat.abort(), 3000);
-                    const respM = await fetch(API.buscarMatriculas, { signal: ctrlMat.signal });
-                    clearTimeout(timerMat);
-                    const dataM = await respM.json();
-                    const lista = Array.isArray(dataM) ? dataM : (dataM?.data || []);
+                if (resMat.status === 'fulfilled' && resMat.value) {
+                    const dataM = resMat.value;
+                    const lista = Array.isArray(dataM) ? dataM : (dataM?.data || dataM?.value || []);
                     matriculasEncontradas = lista.filter(m => {
                         const mCpf = String(m.aluno_cpf || m.cpf || '').replace(/\D/g, '');
                         return mCpf === cpfNum;
                     });
-                } catch(e) {
-                    console.warn('Histórico de matrículas AUNI indisponível no momento:', e);
                 }
 
                 currentMatriculasList = matriculasEncontradas;
@@ -2315,20 +2367,27 @@
                 const inputNascNovo = document.getElementById('inputNascNovo');
 
                 if (!nascAluno) {
-                    const dataDigitada = inputNascNovo ? inputNascNovo.value : '';
+                    const dataDigitada = inputNascNovo ? inputNascNovo.value.trim() : '';
                     if (!dataDigitada) {
+                        _lastCpfConsultado = cpfNum;
+                        _lastCpfCache = {
+                            dadosAluno,
+                            matriculasEncontradas,
+                            nomeAluno,
+                            temNomeBanco
+                        };
+
                         if (boxDataNasc) boxDataNasc.style.display = 'block';
-                        document.getElementById('btnConsultarCPFText').textContent = 'Confirmar Data e Acessar';
+                        const txtEl = document.getElementById('btnConsultarCPFText');
+                        if (txtEl) txtEl.textContent = 'Confirmar Data e Acessar';
                         mostrarFeedback('info', 'Participante não localizado no histórico. Por favor, informe a Data de Nascimento para identificarmos as vagas compatíveis.');
                         if (inputNascNovo) inputNascNovo.focus();
-                        document.getElementById('btnConsultarCPF').disabled = false;
                         return; // Interrompe para aguardar a data de nascimento
                     } else {
                         const idadeVal = calcularIdade(dataDigitada);
                         if (idadeVal === null || isNaN(idadeVal) || idadeVal < 0 || idadeVal > 120) {
                             mostrarFeedback('error', 'Por favor, informe uma data de nascimento válida.');
                             if (inputNascNovo) inputNascNovo.focus();
-                            document.getElementById('btnConsultarCPF').disabled = false;
                             return;
                         }
                         nascAluno = dataDigitada;
@@ -2354,7 +2413,9 @@
                 console.error('Erro na consulta:', err);
                 mostrarFeedback('error', 'Falha ao consultar CPF. Tente novamente.');
             } finally {
-                document.getElementById('btnConsultarCPF').disabled = false;
+                _isConsultandoCPF = false;
+                const btnConsultar = document.getElementById('btnConsultarCPF');
+                if (btnConsultar) btnConsultar.disabled = false;
             }
         }
 
@@ -4014,6 +4075,10 @@
             currentMatriculasList = [];
             currentSelectedProject = null;
             currentFormStep = 1;
+
+            _isConsultandoCPF = false;
+            _lastCpfConsultado = null;
+            _lastCpfCache = null;
 
             const form = document.getElementById('formMatriculaAUNI');
             if (form) form.reset();
