@@ -1949,7 +1949,7 @@
          ========================================================================== -->
     <script>
         // ── CONTROLE AUTOMÁTICO DE VERSÃO & LIMPEZA DE CACHE ──
-        const APP_BUILD_VERSION = '2026.09.23_auni_v14_parentesco_fix';
+        const APP_BUILD_VERSION = '2026.10.05_auni_v15';
         try {
             const lastVer = localStorage.getItem('auni_app_version');
             if (lastVer !== APP_BUILD_VERSION) {
@@ -1988,6 +1988,7 @@
             9:  { nome: "São Raimundo",   cidade: "Governador Valadares", bairro: "São Raimundo",   modalidade_id: 13, modalidade_nome: "Voleibol", espaco_id: 9 },
             11: { nome: "Centro",         cidade: "Chapada Gaúcha",       bairro: "Centro",         modalidade_id: 11, modalidade_nome: "Futsal",   espaco_id: 11 },
             12: { nome: "São Vicente",    cidade: "Patrocínio",           bairro: "São Vicente",    modalidade_id: 13, modalidade_nome: "Voleibol", espaco_id: 12 },
+            15: { nome: "Independência",  cidade: "Ituiutaba",            bairro: "Independência",  modalidade_id: 13, modalidade_nome: "Voleibol", espaco_id: 15 },
             16: { nome: "Independência",  cidade: "Ituiutaba",            bairro: "Independência",  modalidade_id: 13, modalidade_nome: "Voleibol", espaco_id: 16 }
         };
 
@@ -2080,10 +2081,18 @@
         }
 
         async function carregarCachesAUNI() {
+            const fetchWithTimeout = (url, opts = {}, ms = 15000) => {
+                const ctrl = new AbortController();
+                const timer = setTimeout(() => ctrl.abort(), ms);
+                return fetch(url, { ...opts, signal: ctrl.signal })
+                    .then(r => r.json())
+                    .catch(() => null)
+                    .finally(() => clearTimeout(timer));
+            };
             try {
                 const [respN, respE] = await Promise.all([
-                    fetch(API.buscarNucleos).then(r => r.json()).catch(() => null),
-                    fetch(API.buscarEspacos).then(r => r.json()).catch(() => null)
+                    fetchWithTimeout(API.buscarNucleos),
+                    fetchWithTimeout(API.buscarEspacos)
                 ]);
                 const eList = Array.isArray(respE) ? respE : (respE?.espacos || respE?.data || []);
                 if (eList.length > 0) _cacheEspacos = eList;
