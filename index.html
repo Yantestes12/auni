@@ -1949,7 +1949,7 @@
          ========================================================================== -->
     <script>
         // ── CONTROLE AUTOMÁTICO DE VERSÃO & LIMPEZA DE CACHE ──
-        const APP_BUILD_VERSION = '2026.10.05_auni_v15';
+        const APP_BUILD_VERSION = '2026.10.06_auni_v16';
         try {
             const lastVer = localStorage.getItem('auni_app_version');
             if (lastVer !== APP_BUILD_VERSION) {
@@ -3243,7 +3243,7 @@
                 const card = document.createElement('div');
                 card.className = 'nucleo-square-tile';
                 card.setAttribute('data-id', n.id);
-                const bairroNome = n.bairro || n.nome || 'Núcleo Central';
+                const bairroNome = n.nome || n.bairro || 'Núcleo Central';
 
                 card.innerHTML = `
                     <div class="tile-check-pill">✓</div>
