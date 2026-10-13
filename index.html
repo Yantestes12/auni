@@ -2100,7 +2100,9 @@
                 const nList = Array.isArray(respN) ? respN : (respN?.nucleos || respN?.data || []);
                 if (nList.length > 0) {
                     _cacheNucleos = nList.map(n => {
-                        const meta = AUNI_METADATA_MAP[n.id] || NUCLEOS_CATALOGO_AUNI.find(c => Number(c.id) === Number(n.id) || (c.nome && n.nome && c.nome.toLowerCase() === n.nome.toLowerCase()));
+                        const meta = AUNI_METADATA_MAP[n.id] || 
+                                     NUCLEOS_CATALOGO_AUNI.find(c => Number(c.id) === Number(n.id)) || 
+                                     NUCLEOS_CATALOGO_AUNI.find(c => c.nome && n.nome && c.nome.toLowerCase() === n.nome.toLowerCase());
                         const espaco = _cacheEspacos.find(e => Number(e.id) === Number(n.espaco_id));
                         return {
                             ...meta,
