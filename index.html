@@ -2099,7 +2099,7 @@
         }
 
         async function carregarCachesAUNI() {
-            const fetchWithTimeout = (url, opts = {}, ms = 60000) => {
+            const fetchWithTimeout = (url, opts = {}, ms = 8000) => {
                 const ctrl = new AbortController();
                 const timer = setTimeout(() => ctrl.abort(), ms);
                 return fetch(url, { ...opts, signal: ctrl.signal })
@@ -2108,12 +2108,15 @@
                     .finally(() => clearTimeout(timer));
             };
             try {
-                const [respN, respE] = await Promise.all([
-                    fetchWithTimeout(API.buscarNucleos),
-                    fetchWithTimeout(API.buscarEspacos)
-                ]);
-                const eList = Array.isArray(respE) ? respE : (respE?.espacos || respE?.data || []);
-                if (eList.length > 0) _cacheEspacos = eList;
+                // Busca núcleos dinâmicos essenciais no N8N
+                const pNucleos = fetchWithTimeout(API.buscarNucleos, {}, 8000);
+                // Busca espaços em paralelo sem travar
+                fetchWithTimeout(API.buscarEspacos, {}, 5000).then(respE => {
+                    const eList = Array.isArray(respE) ? respE : (respE?.espacos || respE?.data || []);
+                    if (eList.length > 0) _cacheEspacos = eList;
+                }).catch(() => {});
+
+                const respN = await pNucleos;
 
                 const nList = Array.isArray(respN) ? respN : (respN?.nucleos || respN?.data || []);
                 if (nList.length > 0) {
@@ -2583,7 +2586,7 @@
             try {
                 const url = `${API.consultarCPF}?cpf=${encodeURIComponent(cpfNum)}&instituicao=AUNI&instituto=AUNI`;
                 const ctrl = new AbortController();
-                const timeoutId = setTimeout(() => ctrl.abort(), 60000);
+                const timeoutId = setTimeout(() => ctrl.abort(), 6000);
                 const resp = await fetch(url, { signal: ctrl.signal });
                 clearTimeout(timeoutId);
 
@@ -2627,7 +2630,7 @@
         let _cpfConfirmadoPeloUsuario = null;
 
         // Utilitário infalível: fetch com timeout que cobre conexão E parsing do JSON
-        async function fetchJsonWithTimeout(url, opts = {}, timeoutMs = 60000) {
+        async function fetchJsonWithTimeout(url, opts = {}, timeoutMs = 8000) {
             const ctrl = new AbortController();
             const timer = setTimeout(() => ctrl.abort(), timeoutMs);
             try {
@@ -2726,8 +2729,8 @@
                 const urlMat = `${API.buscarMatriculas}&cpf=${encodeURIComponent(cpfNum)}`;
 
                 const [resCPF, resMat] = await Promise.allSettled([
-                    fetchJsonWithTimeout(urlCPF, {}, 60000),
-                    fetchJsonWithTimeout(urlMat, {}, 60000)
+                    fetchJsonWithTimeout(urlCPF, {}, 5000),
+                    fetchJsonWithTimeout(urlMat, {}, 5000)
                 ]);
 
                 let dadosAluno = null;
@@ -3649,7 +3652,7 @@
                     try {
                         const cpfLimpo = String(payload.aluno_cpf).replace(/\D/g, '');
                         const checkUrl = `${API.buscarMatriculas}&cpf=${encodeURIComponent(cpfLimpo)}`;
-                        const checkResp = await fetchJsonWithTimeout(checkUrl, {}, 60000);
+                        const checkResp = await fetchJsonWithTimeout(checkUrl, {}, 6000);
                         const checkLista = Array.isArray(checkResp) ? checkResp : (checkResp?.data || checkResp?.value || []);
                         matExistente = checkLista.find(m => {
                             const mCpf = String(m.aluno_cpf || m.cpf || '').replace(/\D/g, '');
