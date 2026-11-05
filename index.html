@@ -2372,7 +2372,7 @@
                 // Busca núcleos dinâmicos essenciais no N8N
                 const pNucleos = fetchWithTimeout(API.buscarNucleos, {}, 8000);
                 // Busca espaços em paralelo sem travar
-                fetchWithTimeout(API.buscarEspacos, {}, 5000).then(respE => {
+                fetchWithTimeout(API.buscarEspacos, {}, 12000).then(respE => {
                     const eList = Array.isArray(respE) ? respE : (respE?.espacos || respE?.data || []);
                     if (eList.length > 0) _cacheEspacos = eList;
                 }).catch(() => {});
