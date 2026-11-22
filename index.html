@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AUNI — Portal Oficial de Matrícula e Inscrição</title>
     <!-- Cache-Busting Anti-Cache Meta Tags -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -21,7 +21,7 @@
     
     <!-- Ícones Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
 
     <style>
         /* ==========================================================================
@@ -55,15 +55,19 @@
             --soft: var(--c-azure);
 
             /* Superfícies Estilo Caderno / Papel Nobre */
-            --bg-body: #f8fafc;
+            --bg-body: #faf8f5;
             --bg-card: #ffffff;
             --bg-input: #ffffff;
-            --border-pencil: #e2e8f0;
-            --border-pencil-dark: #cbd5e1;
+            --border-pencil: #e5ded3;
+            --border-pencil-dark: #d1c7b7;
             --text-heading: var(--c-azul-escuro);
             --text-body: #1e293b;
-            --text-muted: #64748b;
-            --text-light: #94a3b8;
+            --text-main: #1e293b;
+            --text-dark: #0f172a;
+            --text-muted: #576574;
+            --text-light: #8395a7;
+            --border-color: var(--border-pencil);
+            --c-grafite: #475569;
             
             --radius-input: 10px;
             --radius-card: 16px;
@@ -116,11 +120,14 @@
             gap: 12px;
         }
 
-        .topbar-simbolo-gif {
-            height: 34px;
+        .topbar-simbolo-integra {
+            height: 30px;
             width: auto;
             display: block;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.94);
+            padding: 3px 8px;
+            border-radius: 6px;
         }
 
         .topbar-brand-title {
@@ -833,6 +840,7 @@
         }
 
         .modalidade-sport-card {
+            min-width: 0;
             background: #ffffff;
             border: 1.5px solid var(--border-pencil);
             border-radius: var(--radius-input);
@@ -874,6 +882,12 @@
         .modalidade-sport-card.selected .mod-icon-badge {
             background: var(--c-azul-escuro);
             color: #ffffff;
+        }
+
+        .mod-text-wrap {
+            flex: 1;
+            min-width: 0;
+            padding-right: 28px;
         }
 
         .mod-text-wrap h5 {
@@ -1035,7 +1049,11 @@
         .pill-btn-yn {
             border: none;
             background: none;
-            padding: 4px 12px;
+            min-height: 36px;
+            padding: 6px 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             border-radius: var(--radius-pill);
             font-size: 12px;
             font-weight: 700;
@@ -1156,7 +1174,7 @@
             height: 72px;
             background: rgba(116, 212, 253, 0.2);
             color: var(--c-azul-escuro);
-            border: 2px dashed var(--c-azul-escuro);
+            border: 1.5px solid var(--c-azul-escuro);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1212,10 +1230,8 @@
         }
         .btn-primary-clean:active:not(:disabled), .btn-secondary-clean:active:not(:disabled),
         .btn-choose-project:active:not(:disabled), .btn-pdf-print-clean:active:not(:disabled),
-        .btn-edit-action:active:not(:disabled), .btn-request-action:active:not(:disabled),
-        .pill-btn-yn:active:not(:disabled), .project-tile:active:not(.disabled),
-        .nucleo-square-tile:active:not(.esgotado), .modalidade-sport-card:active {
-            transform: scale(0.97);
+        .btn-edit-action:active:not(:disabled), .btn-request-action:active:not(:disabled) {
+            opacity: 0.92;
         }
         @keyframes portalSkeletonShimmer {
             0% { transform: translate3d(-75%, 0, 0); }
@@ -1273,7 +1289,7 @@
     <!-- ── TOPO INSTITUCIONAL AUNI ── -->
     <header class="topbar-minimal">
         <div class="topbar-left">
-            <img src="logo_integra_simbolo.gif" alt="INTEGRA" class="topbar-simbolo-gif">
+            <img src="logo_integra.png" alt="INTEGRA" class="topbar-simbolo-integra" onerror="if(this.dataset.fb)return;this.dataset.fb=1;this.src='../logo_integra.png'">
             <div class="topbar-brand-title">
                 Associação Nacional União
                 <span>Plataforma INTEGRA</span>
@@ -1316,7 +1332,7 @@
                 </div>
 
                 <!-- CONFIRMAÇÃO VISUAL DO CPF (QUANDO NÃO LOCALIZADO NA BASE/RECEITA) -->
-                <div id="boxConfirmaCPF" style="display: none; margin-bottom: 14px; padding: 14px 16px; background: rgba(28, 51, 136, 0.05); border: 1.5px dashed var(--c-azul-escuro, #1c3388); border-radius: var(--radius-input, 8px); animation: fadeIn 0.25s ease;">
+                <div id="boxConfirmaCPF" style="display: none; margin-bottom: 14px; padding: 14px 16px; background: rgba(28, 51, 136, 0.05); border: 1px solid var(--c-azul-escuro, #1c3388); border-radius: var(--radius-input, 8px); animation: fadeIn 0.25s ease;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; color: var(--c-azul-escuro, #1c3388); font-weight: 700; font-size: 14px;">
                         <i data-lucide="help-circle" style="width: 18px; height: 18px; flex-shrink: 0;"></i>
                         <span>Confira o seu CPF</span>
@@ -1348,7 +1364,7 @@
                 <div id="boxDataNascNovo" style="display: none; margin-bottom: 14px; animation: fadeIn 0.25s ease;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                         <label class="field-label" for="inputNascNovo" style="margin-bottom: 0;">Data de Nascimento do Participante: <span class="req">*</span></label>
-                        <button type="button" id="btnCorrigirCPFLink" onclick="document.getElementById('btnClearCPF')?.click()" style="background: none; border: none; color: var(--c-verde-escuro, #24640a); font-size: 12px; font-weight: 700; text-decoration: underline; cursor: pointer; padding: 0;">Corrigir CPF</button>
+                        <button type="button" id="btnCorrigirCPFLink" onclick="document.getElementById('btnClearCPF')?.click()" style="background: none; border: none; color: var(--c-azul-escuro); font-size: 12px; font-weight: 700; text-decoration: underline; cursor: pointer; padding: 0;">Corrigir CPF</button>
                     </div>
                     <input 
                         type="date" 
@@ -1360,7 +1376,7 @@
                     >
                     <div id="feedbackIdadeNovo" style="display: none; font-size: 12px; font-weight: 700; margin-top: 4px;"></div>
                     <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
-                        Informe a data de nascimento para filtrar as turmas disponíveis para a sua idade. A idade mínima é de 6 anos completos.
+                        Informe a data de nascimento para localizarmos as iniciativas e turmas compatíveis com a sua idade.
                     </p>
                 </div>
 
@@ -1395,7 +1411,7 @@
                     <h4 style="font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 800; color: var(--c-azul-escuro);">
                         Iniciativas com Inscrições Abertas
                     </h4>
-                    <span class="tag-pill-subtle" style="margin-bottom: 0;">Oficial AUNI</span>
+
                 </div>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
                     Escolha uma das iniciativas abaixo para iniciar uma nova inscrição oficial:
@@ -1424,14 +1440,12 @@
             </div>
 
             <!-- INSCRIÇÕES ATIVAS DO PARTICIPANTE (ABAIXO DE INICIATIVAS) -->
-            <div class="section-history" id="sectionHistorico" style="padding-top: 20px; border-top: 1.5px dashed var(--border-pencil);">
+            <div class="section-history" id="sectionHistorico" style="padding-top: 20px; border-top: 1px solid var(--border-pencil);">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
                     <h4 style="font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 800; color: var(--c-azul-escuro);">
                         Minhas Inscrições na AUNI
                     </h4>
-                    <span style="font-size: 11.5px; font-weight: 700; color: var(--text-muted);">
-                        Validação Eletrônica
-                    </span>
+
                 </div>
                 <div id="historyListContainer"></div>
             </div>
@@ -1486,19 +1500,19 @@
                     <p class="pane-subtitle">Preencha com atenção os dados cadastrais oficiais.</p>
 
                     <div class="fields-grid-3">
-                        <div class="form-group">
+                        <div class="form-group" style="grid-column: 1 / -1;">
                             <label class="field-label" for="mat_nome">Nome Completo: <span class="req">*</span></label>
                             <input type="text" id="mat_nome" name="nome" class="field-input" placeholder="Nome completo" required>
                         </div>
                         <div class="form-group" style="grid-column: 1 / -1;">
                             <label for="chk_usar_nome_social" style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; font-size:13px; font-weight:700; color:var(--text-main); user-select:none; margin-bottom:4px;">
-                                <input type="checkbox" id="chk_usar_nome_social" onchange="window.toggleNomeSocialField && window.toggleNomeSocialField('chk_usar_nome_social', 'wrap_mat_nome_social', 'mat_nome_social')" style="width:16px; height:16px; margin-top:2px; accent-color:var(--c-verde-escuro); cursor:pointer; flex-shrink:0;">
+                                <input type="checkbox" id="chk_usar_nome_social" onchange="window.toggleNomeSocialField && window.toggleNomeSocialField('chk_usar_nome_social', 'wrap_mat_nome_social', 'mat_nome_social')" style="width:16px; height:16px; margin-top:2px; accent-color:var(--c-azul-escuro); cursor:pointer; flex-shrink:0;">
                                 <span>Deseja utilizar Nome Social? <span style="font-size:11px;font-weight:normal;color:var(--text-muted);">(opcional)</span></span>
                             </label>
-                            <div style="font-size:11.5px; line-height:1.45; color:var(--text-muted); background:rgba(15,23,42,0.03); border-left:3px solid var(--border-color); padding:6px 10px; border-radius:0 6px 6px 0; margin-bottom:4px;">
-                                O Nome Social é destinado exclusivamente a pessoas travestis ou transexuais que desejam ser reconhecidas socialmente em consonância com sua identidade de gênero (Decreto Federal nº 8.727/2016). Não deve ser preenchido com apelidos.
-                            </div>
                             <div id="wrap_mat_nome_social" style="display:none; margin-top:6px;">
+                                <div style="font-size:11.5px; line-height:1.45; color:var(--text-muted); background:rgba(15,23,42,0.03); border-left:3px solid var(--border-color); padding:6px 10px; border-radius:0 6px 6px 0; margin-bottom:6px;">
+                                    O Nome Social é destinado exclusivamente a pessoas travestis ou transexuais que desejam ser reconhecidas socialmente em consonância com sua identidade de gênero (Decreto Federal nº 8.727/2016). Não deve ser preenchido com apelidos.
+                                </div>
                                 <input type="text" id="mat_nome_social" name="nome_social" class="field-input" placeholder="Informe o Nome Social">
                             </div>
                         </div>
@@ -1608,7 +1622,7 @@
                     </div>
 
                     <!-- Bloco do Responsável Legal (Visível se menor de 18 anos) -->
-                    <div id="blocoResponsavel" style="display: none; background: #fdf2f9; border: 1.5px dashed var(--c-rosa); border-radius: var(--radius-input); padding: 18px; margin-top: 14px; margin-bottom: 14px;">
+                    <div id="blocoResponsavel" style="display: none; background: #fdf2f9; border: 1px solid var(--c-rosa); border-radius: var(--radius-input); padding: 18px; margin-top: 14px; margin-bottom: 14px;">
                         <span style="font-size: 11px; font-weight: 800; color: var(--c-rosa); text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">
                             Participante Menor de 18 Anos
                         </span>
@@ -1629,13 +1643,13 @@
                         <div class="fields-grid-3">
                             <div class="form-group" style="grid-column: 1 / -1;">
                                 <label for="chk_usar_resp_nome_social" style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; font-size:13px; font-weight:700; color:var(--text-main); user-select:none; margin-bottom:4px;">
-                                    <input type="checkbox" id="chk_usar_resp_nome_social" onchange="window.toggleNomeSocialField && window.toggleNomeSocialField('chk_usar_resp_nome_social', 'wrap_mat_resp_nome_social', 'mat_resp_nome_social')" style="width:16px; height:16px; margin-top:2px; accent-color:var(--c-verde-escuro); cursor:pointer; flex-shrink:0;">
+                                    <input type="checkbox" id="chk_usar_resp_nome_social" onchange="window.toggleNomeSocialField && window.toggleNomeSocialField('chk_usar_resp_nome_social', 'wrap_mat_resp_nome_social', 'mat_resp_nome_social')" style="width:16px; height:16px; margin-top:2px; accent-color:var(--c-azul-escuro); cursor:pointer; flex-shrink:0;">
                                     <span>Responsável utiliza Nome Social? <span style="font-size:11px;font-weight:normal;color:var(--text-muted);">(opcional)</span></span>
                                 </label>
-                                <div style="font-size:11.5px; line-height:1.45; color:var(--text-muted); background:rgba(15,23,42,0.03); border-left:3px solid var(--border-color); padding:6px 10px; border-radius:0 6px 6px 0; margin-bottom:4px;">
-                                    O Nome Social é destinado exclusivamente a pessoas travestis ou transexuais que desejam ser reconhecidas socialmente em consonância com sua identidade de gênero (Decreto Federal nº 8.727/2016). Não deve ser preenchido com apelidos.
-                                </div>
                                 <div id="wrap_mat_resp_nome_social" style="display:none; margin-top:6px;">
+                                    <div style="font-size:11.5px; line-height:1.45; color:var(--text-muted); background:rgba(15,23,42,0.03); border-left:3px solid var(--border-color); padding:6px 10px; border-radius:0 6px 6px 0; margin-bottom:6px;">
+                                        O Nome Social é destinado exclusivamente a pessoas travestis ou transexuais que desejam ser reconhecidas socialmente em consonância com sua identidade de gênero (Decreto Federal nº 8.727/2016). Não deve ser preenchido com apelidos.
+                                    </div>
                                     <input type="text" id="mat_resp_nome_social" name="resp_nome_social" class="field-input" placeholder="Informe o Nome Social do Responsável">
                                 </div>
                             </div>
@@ -1694,27 +1708,26 @@
                                 <label class="field-label" for="mat_resp_whatsapp">WhatsApp do Responsável: <span class="req">*</span></label>
                                 <input type="tel" id="mat_resp_whatsapp" name="resp_whatsapp" class="field-input" placeholder="(00) 00000-0000" maxlength="15">
                                 <label style="display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--text-muted); cursor: pointer; user-select: none; margin-top: 4px;">
-                                    <input type="checkbox" id="chk_mesmo_whatsapp_resp" style="accent-color: var(--c-verde); width: 14px; height: 14px; cursor: pointer;">
+                                    <input type="checkbox" id="chk_mesmo_whatsapp_resp" style="accent-color: var(--c-azul-escuro); width: 14px; height: 14px; cursor: pointer;">
                                     <span>Usar o mesmo telefone informado acima</span>
                                 </label>
                             </div>
                         </div>
+                    </div>
                     
                     <!-- Aviso e Contato Adicional para Maiores de 18 Anos -->
-                    <div id="blocoAdultoInfo" style="display: none; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: var(--radius-input); padding: 14px 16px; margin-top: 14px; margin-bottom: 14px;">
+                    <div id="blocoAdultoInfo" style="display: none; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: var(--radius-input); padding: 14px 16px; margin-top: 14px; margin-bottom: 14px;">
                         <span style="font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 4px;">
                             Participante Maior de Idade (18+ Anos)
                         </span>
                         <p style="font-size: 12.5px; color: #475569; margin: 0 0 10px 0;">
-                            Preenchimento de responsável legal dispensado por maioridade oficial.
+                            Dispensado para maiores de 18 anos.
                         </p>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label class="field-label" for="mat_contato_emergencia">Telefone de Emergência / Familiar <span style="font-size:11px;font-weight:normal;color:var(--text-muted);">(opcional)</span>:</label>
                             <input type="tel" id="mat_contato_emergencia" name="contato_emergencia" class="field-input" placeholder="(00) 00000-0000" maxlength="15">
                         </div>
                     </div>
-
-</div>
 
                     <!-- Endereço Residencial -->
                     <div class="fields-grid-3" style="margin-top: 10px;">
@@ -1976,7 +1989,7 @@
                             2. Selecione a <strong>Modalidade Esportiva</strong> desejada: <span class="req">*</span>
                         </label>
                         <div class="modalidades-sports-grid" id="modalidadesCardsContainer">
-                            <div style="grid-column: 1 / -1; color: var(--text-muted); font-size: 13px; padding: 20px; text-align: center; border: 1.5px dashed var(--border-pencil); border-radius: var(--radius-input);">
+                            <div style="grid-column: 1 / -1; color: var(--text-muted); font-size: 13px; padding: 20px; text-align: center; border: 1px solid var(--border-pencil); border-radius: var(--radius-input);">
                                 Selecione a cidade acima para carregar as modalidades.
                             </div>
                         </div>
@@ -2035,11 +2048,17 @@
                             <select id="mat_calcado" name="tamanho_calcado" class="field-select" required>
                                 <option value="">Selecione…</option>
                                 <option value="34">34</option>
+                                <option value="35">35</option>
                                 <option value="36">36</option>
+                                <option value="37">37</option>
                                 <option value="38">38</option>
+                                <option value="39">39</option>
                                 <option value="40">40</option>
+                                <option value="41">41</option>
                                 <option value="42">42</option>
+                                <option value="43">43</option>
                                 <option value="44">44</option>
+                                <option value="45">45</option>
                                 <option value="46">46</option>
                             </select>
                         </div>
@@ -2107,7 +2126,7 @@
                 Matrícula Realizada com Sucesso!
             </h2>
             <p class="desc-clean" style="margin-top: 4px;" id="sucessoDesc">
-                Sua inscrição oficial foi confirmada e registrada no banco de dados da Associação Nacional União.
+                Sua inscrição foi confirmada pela Associação Nacional União (AUNI).
             </p>
             <div>
                 <span class="success-number-pill" id="sucessoNumeroMatricula">Matrícula: #000000</span>
@@ -2134,15 +2153,14 @@
                     <span>Revisar ou Editar Meus Dados</span>
                 </button>
                 
-            <!-- AVISO DE RETORNO AUTOMÁTICO EM 6 SEGUNDOS -->
-            <div id="sucessoAutoReturnNotice" style="background: rgba(16, 185, 129, 0.08); border: 1.5px dashed rgba(16, 185, 129, 0.4); border-radius: 12px; padding: 12px 16px; margin: 4px auto 14px auto; max-width: 440px; text-align: center;">
+            <!-- AVISO CALMO DE CONFIRMAÇÃO SEM SPINNER -->
+            <div id="sucessoAutoReturnNotice" style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 12px; padding: 12px 16px; margin: 4px auto 14px auto; max-width: 440px; text-align: center;">
                 <div style="font-size: 13.5px; font-weight: 700; color: #065f46; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                    <svg class="spin" style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                    <span>Retornando ao seu painel em <strong id="sucessoContadorSegundos" style="font-size: 16px; color: var(--c-verde-escuro);">300</strong> segundos...</span>
+                    <span>Inscrição registrada no seu painel.</span>
                 </div>
-                <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Sua nova ficha já estará listada abaixo e os projetos serão atualizados.</p>
+                <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Você pode salvar sua Ficha Oficial em PDF acima ou retornar ao painel abaixo quando desejar.</p>
             </div>
-            <button type="button" class="btn-primary-clean" id="btnIrParaPainelSucesso" style="background: var(--c-verde-escuro); justify-content: center;">
+            <button type="button" class="btn-primary-clean" id="btnIrParaPainelSucesso" style="background: var(--c-azul-escuro); color: #ffffff; justify-content: center;">
                 <i data-lucide="layout-dashboard" style="width: 17px; height: 17px;"></i>
                 <span>Ir para Meu Painel Agora</span>
             </button>
@@ -2162,7 +2180,7 @@
                 <i data-lucide="lock" style="width: 24px; height: 24px;"></i>
             </div>
             <h3 class="modal-title">Solicitar Alteração de Cadastro</h3>
-            <p class="modal-desc">
+            <p class="modal-desc" id="modalSolicitarDesc">
                 O prazo de edição direta e imediata (6 horas) já encerrou para a matrícula <strong id="modalMatriculaId">#000000</strong>. Para preservar a segurança e o planejamento pedagógico, informe abaixo o que deseja alterar para análise da Coordenação da AUNI.
             </p>
 
@@ -2181,13 +2199,15 @@
                 <input type="tel" id="solicitacao_whatsapp" class="field-input" placeholder="(00) 00000-0000" maxlength="15">
             </div>
 
-            <div style="display: flex; gap: 10px; margin-top: 18px;">
+            <div id="solicitacaoFeedbackBox" style="display: none; margin-top: 12px; padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; line-height: 1.45;"></div>
+
+            <div style="display: flex; gap: 10px; margin-top: 16px;">
                 <button type="button" class="btn-secondary-clean" id="btnFecharModalEdicao" style="flex: 1;">
                     Fechar
                 </button>
-                <button type="button" class="btn-primary-clean" id="btnEnviarWhatsAppPedagogico" style="flex: 2; background: #25D366; color: #fff; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);">
-                    <i data-lucide="message-circle" style="width: 18px; height: 18px;"></i>
-                    <span>Enviar ao Pedagógico</span>
+                <button type="button" class="btn-primary-clean" id="btnEnviarWhatsAppPedagogico" style="flex: 2;">
+                    <i data-lucide="send" style="width: 17px; height: 17px;"></i>
+                    <span>Enviar Solicitação</span>
                 </button>
             </div>
         </div>
@@ -2217,7 +2237,9 @@
             buscarMatriculaId: 'https://w.ibrase.com.br/webhook/buscarmatricula',
             enviarMatricula: 'https://w.ibrase.com.br/webhook/matricula-v2',
             enviarTelemetria: 'https://w.ibrase.com.br/webhook/matricula-telemetria',
-            atualizarMatricula: 'https://w.ibrase.com.br/webhook/matriculaatualizar'
+            atualizarMatricula: 'https://w.ibrase.com.br/webhook/matriculaatualizar',
+            enviarSolicitacaoEdicao: 'https://w.ibrase.com.br/webhook/solicitacoes-edicao-post',
+            buscarSolicitacoesEdicao: 'https://w.ibrase.com.br/webhook/solicitacoes-edicao-get'
         };
 
         
@@ -2329,29 +2351,6 @@
                 }).catch(() => {});
             }
 
-            try {
-                const ctrlGeo = new AbortController();
-                setTimeout(() => ctrlGeo.abort(), 3500);
-                fetch('https://ipwho.is/?lang=pt-BR', { signal: ctrlGeo.signal })
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data && data.success !== false) {
-                            _ipGeo = {
-                                ip: data.ip,
-                                cidade: data.city,
-                                estado: data.region,
-                                estado_sigla: data.region_code,
-                                pais: data.country,
-                                latitude: data.latitude,
-                                longitude: data.longitude,
-                                provedor_isp: data.connection?.isp || null,
-                                asn: data.connection?.asn || null,
-                                tipo_rede_ip: data.connection?.org || null
-                            };
-                        }
-                    })
-                    .catch(() => {});
-            } catch(e) {}
 
             document.addEventListener('pointerdown', (e) => {
                 if (_toques.length >= 80) return;
@@ -2470,6 +2469,16 @@
             { id: 16, projeto_id: 6, modalidade_id: 13, nome: "Independência",  cidade: "Ituiutaba",            bairro: "Independência",  espaco_id: 16, ativo: true }
         ];
 
+        const MODALIDADES_FALLBACK = {
+            1: "Atletismo – Corrida de Rua", 2: "Balé", 3: "Ginástica Rítmica", 4: "Judô", 5: "Jiu-Jitsu",
+            6: "Taekwondo", 7: "Karatê", 8: "Capoeira", 9: "Futebol de Campo", 10: "Futebol Society",
+            11: "Futsal", 12: "Basquetebol", 13: "Voleibol", 14: "Vôlei de Praia", 15: "Handebol",
+            16: "Treinamento Funcional", 17: "Pilates", 18: "Hidroginástica", 19: "Natação", 20: "Xadrez",
+            21: "Samba", 22: "Forró", 23: "Dança Urbana", 24: "Teatro", 25: "Circo",
+            26: "Música", 27: "Pintura", 28: "Fotografia", 29: "Artesanato em Cerâmica", 30: "Costura e Bordado",
+            31: "Manicure", 32: "Designer de sobrancelhas", 33: "Cabeleireiro", 34: "Reforço escolar"
+        };
+
         const AUNI_METADATA_MAP = {
             6:  { nome: "Integração",     cidade: "Araporã",              bairro: "Integração",     modalidade_id: 11, modalidade_nome: "Futsal",   espaco_id: 6 },
             7:  { nome: "Lourdes",        cidade: "Uberaba",              bairro: "Lourdes",        modalidade_id: 11, modalidade_nome: "Futsal",   espaco_id: 7 },
@@ -2513,6 +2522,35 @@
             setupNascimentoListener();
             setupModalSolicitacao();
             setupNaturalidadeIBGE();
+            const btnPainelSucesso = document.getElementById('btnIrParaPainelSucesso');
+            if (btnPainelSucesso) btnPainelSucesso.addEventListener('click', retornarAoPainelAlunoAposMatricula);
+            const btnSairSucesso = document.getElementById('btnSairInicioSucesso');
+            if (btnSairSucesso) btnSairSucesso.addEventListener('click', resetarParaConsulta);
+            const btnCancelarInsc = document.getElementById('btnCancelarInscricao');
+            if (btnCancelarInsc) {
+                btnCancelarInsc.addEventListener('click', () => {
+                    const wrap = document.getElementById('formEnrollmentWrapper');
+                    if (wrap) wrap.style.display = 'none';
+                    const banner = document.getElementById('bannerModoEdicao');
+                    if (banner) banner.style.display = 'none';
+                    const hiddenModo = document.getElementById('hidden_modo_edicao');
+                    if (hiddenModo) hiddenModo.value = 'false';
+                    const hiddenId = document.getElementById('hidden_matricula_id');
+                    if (hiddenId) hiddenId.value = '';
+                    const txtEnroll = document.getElementById('btnSubmitEnrollText');
+                    if (txtEnroll) txtEnroll.textContent = 'Concluir Matrícula';
+                    const hub = document.getElementById('participantHub');
+                    if (hub) hub.style.display = 'flex';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+            document.addEventListener('keydown', (e) => {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                const alvo = e.target && e.target.closest ? e.target.closest('.modalidade-sport-card[role="button"], .nucleo-square-tile[role="button"]') : null;
+                if (!alvo || alvo.getAttribute('tabindex') === '-1') return;
+                e.preventDefault();
+                alvo.click();
+            });
             carregarCachesAUNI();
         });
 
@@ -2569,8 +2607,10 @@
             }
         }
 
+        let _auniCachesPromise = null;
         async function carregarCachesAUNI() {
-            const fetchWithTimeout = (url, opts = {}, ms = 8000) => {
+            if (_auniCachesPromise) return _auniCachesPromise;
+            const fetchWithTimeout = (url, opts = {}, ms = 20000) => {
                 const ctrl = new AbortController();
                 const timer = setTimeout(() => ctrl.abort(), ms);
                 return fetch(url, { ...opts, signal: ctrl.signal })
@@ -2578,38 +2618,40 @@
                     .catch(() => null)
                     .finally(() => clearTimeout(timer));
             };
-            try {
-                // Busca núcleos dinâmicos essenciais no N8N
-                const pNucleos = fetchWithTimeout(API.buscarNucleos, {}, 8000);
-                // Busca espaços em paralelo sem travar
-                fetchWithTimeout(API.buscarEspacos, {}, 12000).then(respE => {
+            _auniCachesPromise = (async () => {
+                try {
+                    const [respN, respE] = await Promise.all([
+                        fetchWithTimeout(API.buscarNucleos, {}, 20000),
+                        fetchWithTimeout(API.buscarEspacos, {}, 20000)
+                    ]);
+
                     const eList = Array.isArray(respE) ? respE : (respE?.espacos || respE?.data || []);
                     if (eList.length > 0) _cacheEspacos = eList;
-                }).catch(() => {});
 
-                const respN = await pNucleos;
-
-                const nList = Array.isArray(respN) ? respN : (respN?.nucleos || respN?.data || []);
-                if (nList.length > 0) {
-                    _cacheNucleos = nList.map(n => {
-                        const meta = AUNI_METADATA_MAP[n.id] || 
-                                     NUCLEOS_CATALOGO_AUNI.find(c => Number(c.id) === Number(n.id)) || 
-                                     NUCLEOS_CATALOGO_AUNI.find(c => c.nome && n.nome && c.nome.toLowerCase() === n.nome.toLowerCase());
-                        const espaco = _cacheEspacos.find(e => Number(e.id) === Number(n.espaco_id));
-                        return {
-                            ...meta,
-                            ...n,
-                            cidade: meta?.cidade || espaco?.cidade || n.cidade || 'Minas Gerais',
-                            bairro: n.bairro || meta?.bairro || espaco?.bairro || n.nome,
-                            modalidade_id: n.modalidade_id || meta?.modalidade_id || 11,
-                            modalidade_nome: (Number(n.modalidade_id) === 13 || meta?.modalidade_id === 13) ? 'Voleibol' : 'Futsal',
-                            ativo: true
-                        };
-                    });
+                    const nList = Array.isArray(respN) ? respN : (respN?.nucleos || respN?.data || []);
+                    if (nList.length > 0) {
+                        _cacheNucleos = nList.map(n => {
+                            const meta = AUNI_METADATA_MAP[n.id] || NUCLEOS_CATALOGO_AUNI.find(c => Number(c.id) === Number(n.id));
+                            const espaco = n.espaco_id ? _cacheEspacos.find(e => Number(e.id) === Number(n.espaco_id)) : (n.bairro_id ? _cacheEspacos.find(e => Number(e.id) === Number(n.bairro_id)) : null);
+                            return {
+                                ...meta,
+                                ...n,
+                                cidade: espaco?.cidade || meta?.cidade || n.cidade || 'Minas Gerais',
+                                bairro: n.bairro || espaco?.bairro || meta?.bairro || n.nome,
+                                modalidade_id: n.modalidade_id || meta?.modalidade_id || 11,
+                                modalidade_nome: (Number(n.modalidade_id) === 13 || meta?.modalidade_id === 13) ? 'Voleibol' : 'Futsal',
+                                ativo: n.ativo !== undefined ? (n.ativo !== false && n.ativo !== 'false' && n.ativo !== 0) : (meta?.ativo ?? true)
+                            };
+                        });
+                        if (typeof renderizarMatriculasExistentesAUNI === 'function' && currentMatriculasList && currentMatriculasList.length > 0) {
+                            renderizarMatriculasExistentesAUNI();
+                        }
+                    }
+                } catch(e) {
+                    console.warn('Usando catálogo oficial de núcleos da AUNI:', e);
                 }
-            } catch(e) {
-                console.warn('Usando catálogo oficial de núcleos da AUNI:', e);
-            }
+            })();
+            return _auniCachesPromise;
         }
 
         // 1. Validador Oficial de CPF (Algoritmo Módulo 11 da Receita Federal + Filtro Anti-Padrões Fakes)
@@ -2810,6 +2852,15 @@
             const btnCorrigirNao = document.getElementById('btnCorrigirCPFNao');
 
             if (input) {
+                input.addEventListener('paste', (e) => {
+                    const pasted = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+                    const digits = pasted.replace(/\D/g, '').slice(0, 11);
+                    if (!digits) return;
+                    e.preventDefault();
+                    input.value = digits;
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                });
+
                 input.addEventListener('input', (e) => {
                     let v = e.target.value.replace(/\D/g, '').slice(0, 11);
                     if (v.length > 9) v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2})$/, '$1.$2.$3-$4');
@@ -2855,6 +2906,7 @@
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter') {
                         e.preventDefault();
+                        clearTimeout(input._timer);
                         const raw = input.value.replace(/\D/g, '');
                         if (raw.length === 11) {
                             if (!validarCPF(raw)) {
@@ -2919,6 +2971,14 @@
 
             if (respCpf) {
                 respCpf.setAttribute('maxlength', '14');
+                respCpf.addEventListener('paste', (e) => {
+                    const pasted = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+                    const digits = pasted.replace(/\D/g, '').slice(0, 11);
+                    if (!digits) return;
+                    e.preventDefault();
+                    respCpf.value = digits;
+                    respCpf.dispatchEvent(new Event('input', { bubbles: true }));
+                });
                 respCpf.addEventListener('input', (e) => {
                     let v = e.target.value.replace(/\D/g, '').slice(0, 11);
                     if (v.length > 9) v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{0,2})$/, '$1.$2.$3-$4');
@@ -2948,6 +3008,10 @@
 
             if (btnClear) {
                 btnClear.addEventListener('click', () => {
+                    clearTimeout(input?._timer);
+                    _lastCpfConsultado = null;
+                    _lastCpfCache = null;
+                    _cpfConfirmadoPeloUsuario = null;
                     if (input) {
                         input.value = '';
                         input.focus();
@@ -2966,6 +3030,7 @@
 
             if (btnConsultar) {
                 btnConsultar.addEventListener('click', () => {
+                    clearTimeout(input?._timer);
                     if (!input) return;
                     const raw = input.value.replace(/\D/g, '');
                     if (raw.length !== 11) {
@@ -3004,7 +3069,7 @@
             if (statusEl) {
                 statusEl.style.display = 'block';
                 statusEl.style.color = 'var(--text-muted)';
-                statusEl.innerHTML = '<span style="display:inline-flex; align-items:center; gap:4px;">🔍 Consultando Receita Federal e base do responsável...</span>';
+                statusEl.innerHTML = '<span style="display:inline-flex; align-items:center; gap:6px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="20" y1="20" x2="16.5" y2="16.5"/></svg>Consultando dados do responsável...</span>';
             }
 
             try {
@@ -3016,8 +3081,10 @@
 
                 const json = await resp.json();
                 const item = Array.isArray(json) ? json[0] : json;
-                const dados = item?.result || item?.dados || item;
-                const nomeEncontrado = dados?.nome_da_pf || item?.nome || item?.aluno_nome || dados?.nome;
+                const hubRawR = (item?.result && typeof item.result === 'object') ? item.result : null;
+                const hubOkR = (hubRawR && hubRawR.status !== false && hubRawR.return !== 'NOK') ? hubRawR : null;
+                const dados = { ...(typeof item?.dados === 'object' && item.dados ? item.dados : {}), ...(typeof item === 'object' && item ? item : {}), ...(hubOkR || {}) };
+                const nomeEncontrado = String(hubOkR?.nome_da_pf || item?.aluno_nome || item?.nome || item?.dados?.nome || '').trim();
 
                 if (nomeEncontrado && nomeInput) {
                     nomeInput.value = nomeEncontrado;
@@ -3054,7 +3121,7 @@
         let _cpfConfirmadoPeloUsuario = null;
 
         // Utilitário infalível: fetch com timeout que cobre conexão E parsing do JSON
-        async function fetchJsonWithTimeout(url, opts = {}, timeoutMs = 8000) {
+        async function fetchJsonWithTimeout(url, opts = {}, timeoutMs = 20000) {
             const ctrl = new AbortController();
             const timer = setTimeout(() => ctrl.abort(), timeoutMs);
             try {
@@ -3069,9 +3136,35 @@
             }
         }
 
+
+        function obterProjetoAUNI() {
+            const lista = (typeof currentProjectsList !== 'undefined' && Array.isArray(currentProjectsList) && currentProjectsList.length > 0)
+                ? currentProjectsList
+                : (Array.isArray(_prefetchedProjetos) && _prefetchedProjetos.length > 0 ? _prefetchedProjetos : []);
+            const achado = lista.find(p => Number(p.id) === 6 || (p.nome && String(p.nome).toUpperCase().includes('AUNI')));
+            if (achado) {
+                return {
+                    ...achado,
+                    id: achado.id || 6,
+                    nome: achado.nome || 'ASSOCIAÇÃO NACIONAL UNIÃO - AUNI',
+                    idade_min: (achado.idade_min !== undefined && achado.idade_min !== '') ? (achado.idade_min === null ? null : Number(achado.idade_min)) : null,
+                    idade_max: (achado.idade_max !== undefined && achado.idade_max !== '') ? (achado.idade_max === null ? null : Number(achado.idade_max)) : null
+                };
+            }
+            return { id: 6, nome: 'ASSOCIAÇÃO NACIONAL UNIÃO - AUNI', idade_min: 7, idade_max: 20 };
+        }
+        function obterIdadeMinGlobalAtiva() {
+            const lista = Array.isArray(_prefetchedProjetos) && _prefetchedProjetos.length > 0 ? _prefetchedProjetos : [];
+            const ativos = lista.filter(p => p && p.ativo !== false && p.ativo !== 0 && p.ativo !== 'false');
+            if (ativos.length === 0) return null;
+            const p = obterProjetoAUNI();
+            return p.idade_min;
+        }
         // ── Executar Consulta do CPF ──
         async function executarConsultaCPF(cpfNum) {
             if (_isConsultandoCPF) return;
+            const _inpCpfEl = document.getElementById('inputCPF');
+            if (_inpCpfEl?._timer) clearTimeout(_inpCpfEl._timer);
 
             // Validação de padrões falsos e sequências repetidas
             if (!validarCPF(cpfNum)) {
@@ -3096,14 +3189,47 @@
                     if (inputNascNovo) inputNascNovo.focus();
                     return;
                 }
-                if (idadeVal < 6) {
-                    mostrarFeedback('error', 'A idade mínima permitida para matrícula é de 6 anos completos.');
+                const minGlobal = obterIdadeMinGlobalAtiva();
+                if (minGlobal !== null && idadeVal < minGlobal) {
+                    mostrarFeedback('error', `A idade mínima permitida nos projetos ativos é de ${minGlobal} anos completos.`);
                     if (inputNascNovo) inputNascNovo.focus();
                     return;
                 }
 
-                // Prossegue INSTANTANEAMENTE sem refazer consultas na rede!
-                const { dadosAluno, matriculasEncontradas, nomeAluno, temNomeBanco } = _lastCpfCache;
+                // Se ainda não há nome na base local, consulta a Receita enviando data_nascimento (DD/MM/AAAA)
+                let { dadosAluno, matriculasEncontradas, nomeAluno, temNomeBanco } = _lastCpfCache;
+                if (!temNomeBanco) {
+                    _isConsultandoCPF = true;
+                    const btnConsultar = document.getElementById('btnConsultarCPF');
+                    if (btnConsultar) btnConsultar.disabled = true;
+                    mostrarFeedback('loading', 'Confirmando dados oficiais...');
+                    try {
+                        const pD = dataDigitada.split('-');
+                        const dataBR = pD.length === 3 ? `${pD[2]}/${pD[1]}/${pD[0]}` : dataDigitada;
+                        const urlHub2 = `${API.consultarCPF}?cpf=${encodeURIComponent(cpfNum)}&data_nascimento=${encodeURIComponent(dataBR)}&instituicao=AUNI&instituto=AUNI&t=${Date.now()}`;
+                        const resHub2 = await fetchJsonWithTimeout(urlHub2, {}, 5000);
+                        if (resHub2) {
+                            const item2 = Array.isArray(resHub2) ? resHub2[0] : resHub2;
+                            const hubRaw2 = (item2?.result && typeof item2.result === 'object') ? item2.result : null;
+                            const hubOk2 = (hubRaw2 && hubRaw2.status !== false && hubRaw2.return !== 'NOK') ? hubRaw2 : null;
+                            const nomeRetornado = String(hubOk2?.nome_da_pf || item2?.aluno_nome || item2?.nome || item2?.dados?.nome || '').trim();
+                            if (nomeRetornado) {
+                                _lastCpfCache.nomeAluno = nomeRetornado;
+                                _lastCpfCache.temNomeBanco = nomeRetornado;
+                                nomeAluno = nomeRetornado;
+                                temNomeBanco = nomeRetornado;
+                            }
+                            if (item2?.dados_recentes) {
+                                dadosAluno = { ...(dadosAluno || {}), dados_recentes: item2.dados_recentes };
+                                _lastCpfCache.dadosAluno = dadosAluno;
+                            }
+                        }
+                    } finally {
+                        _isConsultandoCPF = false;
+                        if (btnConsultar) btnConsultar.disabled = false;
+                    }
+                }
+
                 currentMatriculasList = (currentMatriculasList && currentMatriculasList.length > 0)
                     ? currentMatriculasList
                     : (matriculasEncontradas || []);
@@ -3119,7 +3245,7 @@
                     nasc_oficial: dataDigitada
                 };
 
-                mostrarFeedback('success', `Data confirmada (${idadeVal} anos)! Redirecionando...`);
+                mostrarFeedback('success', temNomeBanco ? `Identificado: ${nomeAluno}` : `Data confirmada (${idadeVal} anos)! Redirecionando...`);
                 setTimeout(() => apresentarPainelDoAluno(), 200);
                 return;
             }
@@ -3179,7 +3305,13 @@
                 if (resCPF) {
                     const json = resCPF;
                     const item = Array.isArray(json) ? json[0] : json;
-                    dadosAluno = item?.result || item?.dados || item;
+                    const hubRaw = (item?.result && typeof item.result === 'object') ? item.result : null;
+                    const hubOk = (hubRaw && hubRaw.status !== false && hubRaw.return !== 'NOK') ? hubRaw : null;
+                    dadosAluno = {
+                        ...(typeof item?.dados === 'object' && item.dados ? item.dados : {}),
+                        ...(typeof item === 'object' && item ? item : {}),
+                        ...(hubOk || {})
+                    };
                     if (item?.projetos_inscritos_ids) dadosAluno.projetos_inscritos_ids = item.projetos_inscritos_ids;
                     if (item?.dados_recentes) dadosAluno.dados_recentes = item.dados_recentes;
                     if (Array.isArray(item?.matriculas)) matriculasViaConsultarCpf = item.matriculas;
@@ -3204,9 +3336,9 @@
 
                 currentMatriculasList = matriculasEncontradas;
 
-                const temNomeBanco = dadosAluno?.nome_da_pf || dadosAluno?.nome || dadosAluno?.aluno_nome || (matriculasEncontradas[0]?.aluno_nome);
+                const temNomeBanco = String(dadosAluno?.nome_da_pf || dadosAluno?.aluno_nome || dadosAluno?.nome || matriculasEncontradas[0]?.aluno_nome || '').trim();
                 const nomeAluno = temNomeBanco || 'Novo Participante';
-                let nascAluno = dadosAluno?.data_nascimento || dadosAluno?.nascimento || (matriculasEncontradas[0]?.data_nascimento) || '';
+                let nascAluno = String(dadosAluno?.data_nascimento || dadosAluno?.nascimento || dadosAluno?.dados_recentes?.data_nascimento || matriculasEncontradas[0]?.data_nascimento || '').trim();
 
                 const foiLocalizado = Boolean(temNomeBanco || matriculasEncontradas.length > 0);
 
@@ -3245,8 +3377,9 @@
                             if (inputNascNovo) inputNascNovo.focus();
                             return;
                         }
-                        if (idadeVal < 6) {
-                            mostrarFeedback('error', 'A idade mínima permitida para matrícula é de 6 anos completos.');
+                        const minGlobal = obterIdadeMinGlobalAtiva();
+                        if (minGlobal !== null && idadeVal < minGlobal) {
+                            mostrarFeedback('error', `A idade mínima permitida nos projetos ativos é de ${minGlobal} anos completos.`);
                             if (inputNascNovo) inputNascNovo.focus();
                             return;
                         }
@@ -3344,6 +3477,25 @@
         }
 
         // ── RENDERIZAR INSCRIÇÕES EXISTENTES COM JANELA DE 6 HORAS ──
+        function resolverDadosMatricula(item) {
+            if (!item) return { nucNome: 'Núcleo Oficial AUNI', modNome: 'Futsal', projNome: 'ASSOCIAÇÃO NACIONAL UNIÃO - AUNI', modId: null, cidTreino: '' };
+            const nId = item.nucleo_id ? Number(item.nucleo_id) : null;
+            const cacheNuc = nId ? (_cacheNucleos || []).find(c => Number(c.id) === nId) : null;
+            const meta = nId ? (AUNI_METADATA_MAP[nId] || NUCLEOS_CATALOGO_AUNI.find(c => Number(c.id) === nId)) : null;
+            const esp = (cacheNuc && cacheNuc.espaco_id) ? (_cacheEspacos || []).find(e => Number(e.id) === Number(cacheNuc.espaco_id)) : null;
+            const cidTreino = item.cidade_treino || esp?.cidade || meta?.cidade || cacheNuc?.cidade || '';
+            const nomePolo = cacheNuc?.nome || meta?.nome || meta?.bairro || '';
+            let nucNome = item.nucleo_nome || item.nucleo || '';
+            if (!nucNome) {
+                nucNome = nomePolo ? (cidTreino ? `${nomePolo} (${cidTreino})` : nomePolo) : (item.bairro_escolhido || (nId ? `Núcleo #${nId}` : 'Núcleo Oficial AUNI'));
+            }
+            const modId = item.modalidade_id || cacheNuc?.modalidade_id || meta?.modalidade_id || null;
+            const modNome = item.modalidade_nome || item.modalidade || cacheNuc?.modalidade_nome || meta?.modalidade_nome || (modId ? MODALIDADES_FALLBACK[Number(modId)] : null) || 'Futsal';
+            const projObj = (item.projeto_id && Array.isArray(currentProjectsList)) ? currentProjectsList.find(p => Number(p.id) === Number(item.projeto_id)) : null;
+            const projNome = item.projeto_nome || item.projeto || projObj?.nome || 'ASSOCIAÇÃO NACIONAL UNIÃO - AUNI';
+            return { nucNome, modNome, projNome, modId, cidTreino };
+        }
+
         function renderizarMatriculasExistentes() { return renderizarMatriculasExistentesAUNI(); }
         function renderizarMatriculasExistentesAUNI() {
             const section = document.getElementById('sectionHistorico');
@@ -3360,24 +3512,9 @@
 
             currentMatriculasList.forEach(item => {
                 const matId = item.id || item.matricula || '---';
-                let modNome = item.modalidade_nome || item.modalidade;
-                let nucNome = item.nucleo_nome || item.nucleo;
-
-                if (item.nucleo_id) {
-                    const nId = Number(item.nucleo_id);
-                    const meta = AUNI_METADATA_MAP[nId] || NUCLEOS_CATALOGO_AUNI.find(c => Number(c.id) === nId);
-                    if (meta) {
-                        if (!nucNome || nucNome === item.bairro) {
-                            nucNome = `${meta.nome || meta.bairro} (${meta.cidade})`;
-                        }
-                        if (!modNome) {
-                            modNome = meta.modalidade_nome || (meta.modalidade_id === 13 ? 'Voleibol' : 'Futsal');
-                        }
-                    }
-                }
-
-                if (!modNome) modNome = (Number(item.modalidade_id) === 13 ? 'Voleibol' : 'Futsal');
-                if (!nucNome) nucNome = item.bairro || 'Núcleo Oficial AUNI';
+                const resolvido = resolverDadosMatricula(item);
+                const modNome = resolvido.modNome;
+                const nucNome = resolvido.nucNome;
                 const turno = item.turno || 'A definir';
 
                 // Cálculo da Janela de 6 Horas
@@ -3396,12 +3533,12 @@
 
                     bannerHtml = `
                         <div class="window-edit-banner window-edit-unlocked">
-                            <span>🟢 Edição Liberada: restam <strong>${remH}h ${remM}min</strong></span>
+                            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>Edição Liberada: restam <strong>${remH}h ${remM}min</strong></span>
                             <span style="font-size: 11px;">Alterações refletem direto na ficha</span>
                         </div>
                     `;
                     botaoAcaoHtml = `
-                        <button type="button" class="btn-edit-action" onclick="iniciarEdicaoMatricula('${matId}')">
+                        <button type="button" class="btn-edit-action" onclick="iniciarEdicaoMatricula('${escapeQuotes(matId)}')">
                             <i data-lucide="edit-3" style="width: 15px; height: 15px;"></i>
                             <span>Editar Meus Dados</span>
                         </button>
@@ -3409,12 +3546,12 @@
                 } else {
                     bannerHtml = `
                         <div class="window-edit-banner window-edit-locked">
-                            <span>🔒 Prazo de edição direta expirado (+6 horas)</span>
+                            <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -2px; margin-right: 4px;" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Prazo de edição expirado (+6 horas)</span>
                             <span style="font-size: 11px;">Solicite alteração à coordenação</span>
                         </div>
                     `;
                     botaoAcaoHtml = `
-                        <button type="button" class="btn-request-action" onclick="abrirModalSolicitacao('${matId}', '${escapeQuotes(item.aluno_nome || currentStudentData.nome)}')">
+                        <button type="button" class="btn-request-action" onclick="abrirModalSolicitacao('${escapeQuotes(matId)}', '${escapeQuotes(item.aluno_nome || currentStudentData.nome)}')">
                             <i data-lucide="help-circle" style="width: 15px; height: 15px;"></i>
                             <span>Solicitar Edição ao Pedagógico</span>
                         </button>
@@ -3426,7 +3563,7 @@
                 card.innerHTML = `
                     <div class="history-item-top">
                         <div>
-                            <span style="font-size: 11px; font-weight: 800; color: var(--c-rosa); text-transform: uppercase;">Inscrição Oficial #${matId}</span>
+                            <span style="font-size: 11px; font-weight: 800; color: var(--c-rosa); text-transform: uppercase;">Inscrição Oficial #${escapeHTML(matId)}</span>
                             <div class="history-proj-title">ASSOCIAÇÃO NACIONAL UNIÃO - AUNI</div>
                         </div>
                         <span class="history-badge-active">Confirmada</span>
@@ -3435,14 +3572,14 @@
                     ${bannerHtml}
 
                     <div class="history-details-grid">
-                        <span><strong>Modalidade:</strong> ${modNome}</span>
-                        <span><strong>Núcleo:</strong> ${nucNome}</span>
-                        <span><strong>Turno:</strong> ${turno}</span>
+                        <span><strong>Modalidade:</strong> ${escapeHTML(modNome)}</span>
+                        <span><strong>Núcleo:</strong> ${escapeHTML(nucNome)}</span>
+                        <span><strong>Turno:</strong> ${escapeHTML(turno)}</span>
                         <span><strong>Data Registro:</strong> ${item.created_at ? new Date(item.created_at).toLocaleDateString('pt-BR') : 'Hoje'}</span>
                     </div>
 
                     <div class="history-actions-row">
-                        <button type="button" class="btn-pdf-print-clean" onclick="emitirFichaOficialPDF('${matId}')">
+                        <button type="button" class="btn-pdf-print-clean" onclick="emitirFichaOficialPDF('${escapeQuotes(matId)}')">
                             <i data-lucide="printer" style="width: 15px; height: 15px;"></i>
                             <span>Baixar Ficha Oficial (PDF)</span>
                         </button>
@@ -3492,7 +3629,8 @@
                 document.getElementById('hidden_modo_edicao').value = 'true';
                 document.getElementById('btnSubmitEnrollText').textContent = 'Salvar Alterações';
 
-                currentSelectedProject = { id: 6, nome: "ASSOCIAÇÃO NACIONAL UNIÃO - AUNI", idade_min: 7, idade_max: 20 };
+                const _projAuniEd = obterProjetoAUNI();
+                currentSelectedProject = { id: _projAuniEd.id, nome: mat.projeto_nome || _projAuniEd.nome, idade_min: _projAuniEd.idade_min, idade_max: _projAuniEd.idade_max };
 
                 const nomeAluno = (mat.aluno_nome || mat.nome || currentStudentData?.nome || '').trim();
                 const cpfAluno = mat.aluno_cpf || mat.cpf || currentStudentData?.cpf || '';
@@ -3596,18 +3734,6 @@
                                  _cacheNucleos.find(n => Number(n.id) === targetNucId);
                     if (meta?.cidade) cidadeTreino = meta.cidade;
                 }
-                if (!cidadeTreino && (mat.nucleo_nome || mat.bairro_escolhido || mat.bairro)) {
-                    const termo = String(mat.nucleo_nome || mat.bairro_escolhido || mat.bairro).trim().toLowerCase();
-                    const nucMatch = NUCLEOS_CATALOGO_AUNI.find(n => 
-                        (n.nome && n.nome.toLowerCase() === termo) || 
-                        (n.bairro && n.bairro.toLowerCase() === termo)
-                    );
-                    if (nucMatch?.cidade) cidadeTreino = nucMatch.cidade;
-                }
-                if (!cidadeTreino && mat.cidade) {
-                    const cidMatch = NUCLEOS_CATALOGO_AUNI.find(n => n.cidade.toLowerCase() === String(mat.cidade).trim().toLowerCase());
-                    if (cidMatch?.cidade) cidadeTreino = cidMatch.cidade;
-                }
 
                 // Carrega cidades e seleciona automaticamente cidade, modalidade e núcleo
                 carregarCidadesDoProjeto(6, cidadeTreino, targetModId, targetNucId);
@@ -3635,7 +3761,7 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ instituto: 'AUNI', instituicao: 'AUNI' })
-            }, 6000).then(data => {
+            }, 20000).then(data => {
                 if (data) {
                     const lista = Array.isArray(data) ? (data[0]?.projetos || data) : (data?.projetos || []);
                     if (lista && lista.length > 0) _prefetchedProjetos = lista;
@@ -3648,11 +3774,29 @@
             const container = document.getElementById('projectsGridContainer');
             if (!container) return;
 
-            // Regra oficial do projeto AUNI ID 6: Faixa etária de 7 a 20 anos completos
-            const minIdade = 7;
-            const maxIdade = 20;
+            if ((!currentProjectsList || currentProjectsList.length === 0) && !_prefetchedProjetos && API.buscarProjetos) {
+                try {
+                    const data = await fetchJsonWithTimeout(API.buscarProjetos, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ instituto: 'AUNI', instituicao: 'AUNI' })
+                    }, 20000);
+                    const lista = Array.isArray(data) ? (data[0]?.projetos || data) : (data?.projetos || []);
+                    if (lista && lista.length > 0) {
+                        _prefetchedProjetos = lista;
+                        currentProjectsList = lista;
+                    }
+                } catch (_) {}
+            } else if ((!currentProjectsList || currentProjectsList.length === 0) && Array.isArray(_prefetchedProjetos)) {
+                currentProjectsList = [..._prefetchedProjetos];
+            }
+
+            const projAuni = obterProjetoAUNI();
+            const minIdade = (projAuni.idade_min !== null && projAuni.idade_min !== undefined && projAuni.idade_min !== '') ? Number(projAuni.idade_min) : null;
+            const maxIdade = (projAuni.idade_max !== null && projAuni.idade_max !== undefined && projAuni.idade_max !== '') ? Number(projAuni.idade_max) : null;
+            const faixaLabel = (minIdade !== null && maxIdade !== null) ? `${minIdade} a ${maxIdade} anos` : (minIdade !== null ? `a partir de ${minIdade} anos` : (maxIdade !== null ? `até ${maxIdade} anos` : 'Livre (Todas as idades)'));
             const temIdade = (idade !== null && idade !== undefined && !isNaN(idade));
-            const foraDaFaixa = temIdade && (idade < minIdade || idade > maxIdade);
+            const foraDaFaixa = temIdade && ((minIdade !== null && idade < minIdade) || (maxIdade !== null && idade > maxIdade));
 
             // Verificação de segurança: participante já possui inscrição nesta iniciativa
             const jaInscrito = (currentMatriculasList && currentMatriculasList.length > 0);
@@ -3666,10 +3810,11 @@
 
             if (jaInscrito) {
                 cardClass += ' enrolled-active';
+                const safeMatIdAuni = escapeHTML(matIdExistente);
                 badgeFaixaHtml = `
                     <span class="badge-age-tag" style="background: #ecfdf5; color: #047857; border-color: #a7f3d0; font-weight: 700;">
                         <i data-lucide="check-circle-2" style="width: 13px; height: 13px; display: inline; vertical-align: middle; margin-right: 4px;"></i>
-                        Inscrição Já Realizada (#${matIdExistente})
+                        Inscrição Já Realizada (#${safeMatIdAuni})
                     </span>
                 `;
                 btnHtml = `
@@ -3677,7 +3822,7 @@
                         <button type="button" class="btn-choose-project" disabled style="background: #f0fdf4; color: #166534; border: 1.5px solid #86efac; cursor: default; font-weight: 700;">
                             <span style="display: flex; align-items: center; gap: 8px;">
                                 <i data-lucide="check-circle" style="width: 17px; height: 17px; color: #16a34a;"></i>
-                                Matrícula Confirmada (#${matIdExistente})
+                                Matrícula Confirmada (#${safeMatIdAuni})
                             </span>
                             <span style="font-size: 11px; font-weight: 800; color: #047857; background: #dcfce7; padding: 3px 8px; border-radius: 999px;">JÁ INSCRITO</span>
                         </button>
@@ -3686,14 +3831,14 @@
                 avisoIncompativelHtml = `
                     <div style="margin-top: 12px; padding: 10px 14px; background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 10px; font-size: 12.5px; color: #166534; display: flex; align-items: flex-start; gap: 8px; line-height: 1.45;">
                         <i data-lucide="info" style="width: 17px; height: 17px; flex-shrink: 0; margin-top: 2px; color: #16a34a;"></i>
-                        <span>Você já está oficialmente matriculado nesta iniciativa (<strong>Inscrição #${matIdExistente}</strong>). Para emitir sua ficha oficial em PDF ou atualizar suas informações, utilize a seção <strong>Minhas Inscrições na AUNI</strong> logo abaixo.</span>
+                        <span>Você já está oficialmente matriculado nesta iniciativa (<strong>Inscrição #${safeMatIdAuni}</strong>). Para emitir sua ficha oficial em PDF ou atualizar suas informações, utilize a seção <strong>Minhas Inscrições na AUNI</strong> logo abaixo.</span>
                     </div>
                 `;
             } else if (foraDaFaixa) {
                 cardClass += ' disabled';
                 badgeFaixaHtml = `
                     <span class="badge-age-tag" style="background: #fee2e2; color: #b91c1c; border-color: #fca5a5;">
-                        Faixa: 7 a 20 anos • Idade fora da faixa (${idade} anos)
+                        Faixa: ${faixaLabel} • Idade fora da faixa (${idade} anos)
                     </span>
                 `;
                 btnHtml = `
@@ -3708,14 +3853,14 @@
                 avisoIncompativelHtml = `
                     <div style="margin-top: 12px; padding: 10px 14px; background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 10px; font-size: 12.5px; color: #9f1239; display: flex; align-items: flex-start; gap: 8px; line-height: 1.45;">
                         <i data-lucide="alert-circle" style="width: 17px; height: 17px; flex-shrink: 0; margin-top: 2px;"></i>
-                        <span><strong>Atenção:</strong> O projeto esportivo oficial da AUNI destina-se exclusivamente a crianças e jovens de <strong>7 a 20 anos</strong>. De acordo com a data informada, você possui <strong>${idade} anos</strong> e não atende ao limite de idade desta iniciativa.</span>
+                        <span><strong>Atenção:</strong> O projeto esportivo oficial da AUNI destina-se a participantes na faixa <strong>${faixaLabel}</strong>. De acordo com a data informada, você possui <strong>${idade} anos</strong> e não atende ao limite de idade desta iniciativa.</span>
                     </div>
                 `;
             } else {
                 const textoIdadeCompativel = temIdade ? ` • Idade compatível (${idade} anos)` : '';
                 badgeFaixaHtml = `
                     <span class="badge-age-tag">
-                        Faixa: 7 a 20 anos${textoIdadeCompativel}
+                        Faixa: ${faixaLabel}${textoIdadeCompativel}
                     </span>
                 `;
                 btnHtml = `
@@ -3756,10 +3901,13 @@
                 return;
             }
 
-            // Verificação de segurança de faixa etária
+            const projAuniCfg = obterProjetoAUNI();
+            const minCfg = (projAuniCfg.idade_min !== null && projAuniCfg.idade_min !== undefined && projAuniCfg.idade_min !== '') ? Number(projAuniCfg.idade_min) : null;
+            const maxCfg = (projAuniCfg.idade_max !== null && projAuniCfg.idade_max !== undefined && projAuniCfg.idade_max !== '') ? Number(projAuniCfg.idade_max) : null;
             if (currentStudentData && currentStudentData.idade !== null && currentStudentData.idade !== undefined) {
-                if (currentStudentData.idade < 7 || currentStudentData.idade > 20) {
-                    alert(`Inscrição indisponível: o projeto da AUNI é exclusivo para a faixa etária de 7 a 20 anos (idade atual: ${currentStudentData.idade} anos).`);
+                if ((minCfg !== null && currentStudentData.idade < minCfg) || (maxCfg !== null && currentStudentData.idade > maxCfg)) {
+                    const faixaTxt = (minCfg !== null && maxCfg !== null) ? `${minCfg} a ${maxCfg} anos` : (minCfg !== null ? `a partir de ${minCfg} anos` : `até ${maxCfg} anos`);
+                    alert(`Inscrição indisponível: este projeto é destinado à faixa ${faixaTxt} (idade atual: ${currentStudentData.idade} anos).`);
                     return;
                 }
             }
@@ -3774,7 +3922,7 @@
             document.getElementById('hidden_modo_edicao').value = 'false';
             document.getElementById('btnSubmitEnrollText').textContent = 'Concluir Matrícula';
 
-            currentSelectedProject = { id: 6, nome: "ASSOCIAÇÃO NACIONAL UNIÃO - AUNI", idade_min: 7, idade_max: 20 };
+            currentSelectedProject = { id: projAuniCfg.id, nome: projAuniCfg.nome, idade_min: minCfg, idade_max: maxCfg };
 
             // Se for Novo Participante, deixa o campo nome completamente vazio para a pessoa preencher
             const isNovo = !currentStudentData.nome || currentStudentData.nome.trim() === '' || currentStudentData.nome === 'Novo Participante';
@@ -3831,18 +3979,20 @@
             const selectCid = document.getElementById('select_cidade_filtro');
             if (!selectCid) return;
 
-            // 1. Garante que todo núcleo em cache tenha cidade e modalidade associadas
+            // 1. Garante que todo núcleo em cache tenha cidade e modalidade associadas estritamente por ID
             _cacheNucleos.forEach(n => {
-                const meta = AUNI_METADATA_MAP[n.id] || NUCLEOS_CATALOGO_AUNI.find(c => Number(c.id) === Number(n.id) || (c.nome && n.nome && c.nome.toLowerCase() === n.nome.toLowerCase()));
-                if (!n.cidade && meta) n.cidade = meta.cidade;
-                if (!n.bairro && meta) n.bairro = meta.bairro;
-                if (!n.modalidade_id && meta) n.modalidade_id = meta.modalidade_id;
-                n.ativo = true;
+                const meta = AUNI_METADATA_MAP[n.id] || NUCLEOS_CATALOGO_AUNI.find(c => Number(c.id) === Number(n.id));
+                const esp = n.espaco_id ? _cacheEspacos.find(e => Number(e.id) === Number(n.espaco_id)) : null;
+                if (!n.cidade) n.cidade = esp?.cidade || meta?.cidade || '';
+                if (!n.bairro) n.bairro = esp?.bairro || meta?.bairro || '';
+                if (!n.modalidade_id && (esp?.modalidade_id || meta?.modalidade_id)) n.modalidade_id = esp?.modalidade_id || meta?.modalidade_id;
+                if (n.ativo === undefined) n.ativo = meta?.ativo ?? true;
             });
 
-            // 2. Extrai cidades únicas
+            // 2. Extrai cidades únicas apenas dos núcleos ativos
             const cidadesSet = new Set();
             _cacheNucleos.forEach(n => {
+                if (n.ativo === false || n.ativo === 0 || n.ativo === 'false') return;
                 if (n.cidade) cidadesSet.add(n.cidade.trim());
             });
 
@@ -3878,6 +4028,38 @@
             };
         }
 
+        function _sportSvg(pathBody) {
+            return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${pathBody}</svg>`;
+        }
+        function obterSvgEsportePorNome(nome) {
+            const n = (nome || '').toLowerCase();
+            if (n.includes('futebol') || n.includes('futsal') || n.includes('society') || n.includes('campo')) {
+                return _sportSvg('<circle cx="12" cy="12" r="9"/><polygon points="12 7 15.8 9.8 14.3 14.3 9.7 14.3 8.2 9.8"/><line x1="12" y1="3" x2="12" y2="7"/><line x1="20.5" y1="9.2" x2="15.8" y2="9.8"/><line x1="17.3" y1="19.3" x2="14.3" y2="14.3"/><line x1="6.7" y1="19.3" x2="9.7" y2="14.3"/><line x1="3.5" y1="9.2" x2="8.2" y2="9.8"/>');
+            }
+            if (n.includes('funcional') || n.includes('crossfit') || n.includes('musculação') || n.includes('musculacao') || n.includes('fitness')) {
+                return _sportSvg('<path d="M6.5 6.5l11 11"/><path d="M21 21l-1-1"/><path d="M3 3l1 1"/><path d="M18 22l4-4"/><path d="M2 6l4-4"/><path d="M3 10l7-7"/><path d="M14 21l7-7"/>');
+            }
+            if (n.includes('corrida') || n.includes('atletismo') || n.includes('caminhada') || n.includes('maratona') || n.includes('ciclismo') || n.includes('bike')) {
+                return _sportSvg('<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>');
+            }
+            if (n.includes('jiu') || n.includes('judô') || n.includes('judo') || n.includes('karatê') || n.includes('karate') || n.includes('taekwondo') || n.includes('luta') || n.includes('boxe') || n.includes('muay') || n.includes('kickboxing') || n.includes('capoeira')) {
+                return _sportSvg('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>');
+            }
+            if (n.includes('vôlei') || n.includes('volei') || n.includes('basquete') || n.includes('handebol') || n.includes('tênis') || n.includes('tenis') || n.includes('padel')) {
+                return _sportSvg('<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6c4.2 3.2 4.2 9.6 0 12.8"/><path d="M18.4 5.6c-4.2 3.2-4.2 9.6 0 12.8"/><line x1="12" y1="3" x2="12" y2="21"/>');
+            }
+            if (n.includes('natação') || n.includes('natacao') || n.includes('hidro') || n.includes('aquático') || n.includes('surf') || n.includes('bodyboard')) {
+                return _sportSvg('<path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M2 17c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/><path d="M7 7l3-3 3 3"/>');
+            }
+            if (n.includes('balé') || n.includes('bale') || n.includes('dança') || n.includes('danca') || n.includes('zumba') || n.includes('ritmos') || n.includes('ginástica') || n.includes('ginastica') || n.includes('pilates') || n.includes('yoga') || n.includes('alongamento')) {
+                return _sportSvg('<circle cx="12" cy="5" r="2"/><path d="M12 7v6l4 4"/><path d="M12 13l-4 4"/><path d="M7 10l5 1 5-1"/>');
+            }
+            if (n.includes('xadrez') || n.includes('dama')) {
+                return _sportSvg('<rect x="4" y="4" width="16" height="16" rx="2"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/>');
+            }
+            return _sportSvg('<circle cx="12" cy="9" r="6"/><path d="M8.5 14.5L7 22l5-3 5 3-1.5-7.5"/>');
+        }
+
         // ── CARREGAR MODALIDADES DA CIDADE ──
         function carregarModalidadesDaCidade(cidadeEscolhida, projId, targetModId = null, targetNucId = null) {
             const modContainer = document.getElementById('modalidadesCardsContainer');
@@ -3891,23 +4073,18 @@
             if (nucBloco) nucBloco.style.display = 'none';
 
             if (!cidadeEscolhida) {
-                modContainer.innerHTML = '<div style="grid-column: 1 / -1; color: var(--text-muted); font-size: 13px; padding: 20px; text-align: center; border: 1.5px dashed var(--border-pencil); border-radius: var(--radius-input);">Selecione a cidade acima para carregar as modalidades.</div>';
+                modContainer.innerHTML = '<div style="grid-column: 1 / -1; color: var(--text-muted); font-size: 13px; padding: 20px; text-align: center; border: 1px solid var(--border-pencil); border-radius: var(--radius-input);">Selecione a cidade acima para carregar as modalidades.</div>';
                 return;
             }
 
-            // Filtra núcleos correspondentes à cidade (com fallback ao catálogo)
-            let nucleos = _cacheNucleos.filter(n => 
+            const todosNucleos = (_cacheNucleos && _cacheNucleos.length > 0) ? _cacheNucleos : NUCLEOS_CATALOGO_AUNI;
+            let nucleos = todosNucleos.filter(n =>
+                n.ativo !== false && n.ativo !== 0 && n.ativo !== 'false' &&
                 String(n.cidade || '').trim().toLowerCase() === String(cidadeEscolhida).trim().toLowerCase()
             );
 
             if (nucleos.length === 0) {
-                nucleos = NUCLEOS_CATALOGO_AUNI.filter(n => 
-                    String(n.cidade || '').trim().toLowerCase() === String(cidadeEscolhida).trim().toLowerCase()
-                );
-            }
-
-            if (nucleos.length === 0) {
-                modContainer.innerHTML = '<div style="grid-column: 1 / -1; color: var(--text-muted); font-size: 13px; padding: 20px; text-align: center; border: 1.5px dashed var(--border-pencil); border-radius: var(--radius-input);">Nenhuma modalidade ativa encontrada para esta localidade.</div>';
+                modContainer.innerHTML = '<div style="grid-column: 1 / -1; color: var(--text-muted); font-size: 13px; padding: 20px; text-align: center; border: 1px solid var(--border-pencil); border-radius: var(--radius-input);">Nenhuma modalidade ativa encontrada para esta localidade.</div>';
                 return;
             }
 
@@ -3930,14 +4107,16 @@
             modalidadesArr.forEach((mod, idx) => {
                 const card = document.createElement('div');
                 card.className = 'modalidade-sport-card';
+                card.setAttribute('role', 'button');
+                card.setAttribute('tabindex', '0');
                 card.setAttribute('data-id', mod.id);
-                const icone = mod.id === 13 ? '🏐' : '⚽';
+                const icone = obterSvgEsportePorNome(mod.nome);
 
                 card.innerHTML = `
                     <div class="mod-icon-badge">${icone}</div>
                     <div class="mod-text-wrap">
-                        <h5>${mod.nome}</h5>
-                        <p>${mod.nucleos.length} núcleo(s) disponível(is)</p>
+                        <h5>${escapeHTML(mod.nome)}</h5>
+                        <p>${mod.nucleos.length} ${mod.nucleos.length === 1 ? 'núcleo disponível' : 'núcleos disponíveis'}</p>
                     </div>
                     <div class="mod-check-badge">✓</div>
                 `;
@@ -3998,6 +4177,9 @@
                 const card = document.createElement('div');
                 card.className = 'nucleo-square-tile' + (esgotadoParaAluno ? ' esgotado' : '');
                 if (esgotadoParaAluno) card.style.opacity = '0.55';
+                card.setAttribute('role', 'button');
+                card.setAttribute('tabindex', esgotadoParaAluno ? '-1' : '0');
+                if (esgotadoParaAluno) card.setAttribute('aria-disabled', 'true');
                 card.setAttribute('data-id', n.id);
                 const bairroNome = n.nome || n.bairro || 'Núcleo Central';
 
@@ -4010,13 +4192,13 @@
                 card.innerHTML = `
                     <div class="tile-check-pill">${esgotadoParaAluno ? '✕' : '✓'}</div>
                     <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
-                        <span class="tile-mod-badge">${modNome}</span>
+                        <span class="tile-mod-badge">${escapeHTML(modNome)}</span>
                         ${badgeVagas}
                     </div>
-                    <div class="tile-bairro-title">${bairroNome}</div>
+                    <div class="tile-bairro-title">${escapeHTML(bairroNome)}</div>
                     <div class="tile-ref-info">
                         <i data-lucide="map-pin" style="width: 12px; height: 12px; color: var(--c-rosa); flex-shrink: 0;"></i>
-                        <span>Núcleo ${n.nome} (${n.cidade || 'MG'})</span>
+                        <span>Núcleo ${escapeHTML(n.nome)} (${escapeHTML(n.cidade || 'MG')})</span>
                     </div>
                 `;
 
@@ -4156,7 +4338,10 @@
                 payload.timestamp = new Date().toISOString();
                 payload.aceite_eletronico = true;
                 payload.aceite_eletronico_em = new Date().toISOString();
-                if (payload.laudo_medico_url) {
+                if (Array.isArray(window._uploadedDocUrls) && window._uploadedDocUrls.length > 0) {
+                    payload.laudo_medico_url = window._uploadedDocUrls[0];
+                    payload.documentos_urls = JSON.stringify(window._uploadedDocUrls);
+                } else if (payload.laudo_medico_url) {
                     payload.documentos_urls = JSON.stringify([payload.laudo_medico_url]);
                 }
                 payload.cidade_treino = document.getElementById('select_cidade_filtro')?.value || '';
@@ -4180,7 +4365,7 @@
                     try {
                         const cpfLimpo = String(payload.aluno_cpf).replace(/\D/g, '');
                         const checkUrl = `${API.buscarMatriculas}&cpf=${encodeURIComponent(cpfLimpo)}`;
-                        const checkResp = await fetchJsonWithTimeout(checkUrl, {}, 6000);
+                        const checkResp = await fetchJsonWithTimeout(checkUrl, {}, 20000);
                         const checkLista = Array.isArray(checkResp) ? checkResp : (checkResp?.data || checkResp?.value || []);
                         matExistente = checkLista.find(m => {
                             const mCpf = String(m.aluno_cpf || m.cpf || '').replace(/\D/g, '');
@@ -4198,6 +4383,26 @@
                     payload.modo_edicao = true;
                 }
 
+                const nucleoAlvoId = payload.nucleo_id || document.getElementById('hidden_nucleo_id')?.value;
+                if (nucleoAlvoId) {
+                    const todosNucleos = (_cacheNucleos && _cacheNucleos.length > 0) ? _cacheNucleos : NUCLEOS_CATALOGO_AUNI;
+                    const nAlvo = todosNucleos.find(n => String(n.id) === String(nucleoAlvoId));
+                    if (nAlvo) {
+                        const info = calcularVagasNucleo(nAlvo);
+                        const matOriginal = (currentMatriculasList || []).find(m => String(m.id) === String(payload.id) || String(m.matricula) === String(payload.id)) || window._ultimoPayloadMatricula;
+                        const mesmoNucleoJaMatriculado = isEdicao && matOriginal && String(matOriginal.nucleo_id) === String(nucleoAlvoId);
+                        if (info.esgotado && !mesmoNucleoJaMatriculado) {
+                            alert(`Não foi possível concluir a matrícula: As vagas para o núcleo "${nAlvo.nome || 'selecionado'}" estão totalmente esgotadas (${info.inscritos}/${info.vagasTotais}, incluindo 50% de cadastro de reserva).\n\nPor favor, selecione outro núcleo.`);
+                            btnSubmit.disabled = false;
+                            btnSubmit.innerHTML = '<i data-lucide="check-circle" style="width:18px;height:18px;"></i> <span id="btnSubmitEnrollText">' + (isEdicao ? 'Salvar Alterações' : 'Concluir Matrícula') + '</span>';
+                            if (window.lucide) lucide.createIcons();
+                            irParaPasso(3);
+                            return;
+                        }
+                        payload.tipo_vaga = info.emReserva ? 'reserva' : 'regular';
+                    }
+                }
+
                 try {
                     let json = {};
                     let numMatricula = payload.id;
@@ -4206,7 +4411,6 @@
                         payload.id = Number(payload.id);
                         numMatricula = payload.id;
 
-                        // Envio para webhook oficial de atualização (matriculaatualizar)
                         const params = new URLSearchParams();
                         for (let k in payload) {
                             if (payload[k] !== undefined && payload[k] !== null) {
@@ -4214,31 +4418,37 @@
                             }
                         }
 
-                        // 1. Envio principal via form-urlencoded para o webhook matriculaatualizar
                         const resp = await fetch(API.atualizarMatricula, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
                             body: params.toString()
                         });
+                        if (!resp.ok) throw new Error('Falha ao atualizar matrícula (HTTP ' + resp.status + ')');
                         json = await resp.json().catch(() => ({}));
 
-                        // 2. Envio redundante via JSON para o webhook matriculaatualizar
-                        fetch(API.atualizarMatricula, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        }).catch(() => {});
-
                     } else {
-                        // Nova matrícula via webhook matricula (POST)
                         const resp = await fetch(API.enviarMatricula, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
                         });
+                        if (!resp.ok) throw new Error('Falha ao registrar matrícula (HTTP ' + resp.status + ')');
                         json = await resp.json().catch(() => ({}));
-                        numMatricula = json.id || json.matricula || Math.floor(100000 + Math.random() * 900000);
+                        numMatricula = json.id || json.matricula || json.n_inscricao || null;
+                        if (!numMatricula && payload.aluno_cpf) {
+                            try {
+                                const checkResp = await fetchJsonWithTimeout(`${API.buscarMatriculas}&cpf=${encodeURIComponent(payload.aluno_cpf)}`, {}, 12000);
+                                const checkLista = Array.isArray(checkResp) ? checkResp : (checkResp?.data || checkResp?.value || []);
+                                const achada = checkLista.find(m => String(m.projeto_id || '') === String(payload.projeto_id || ''));
+                                if (achada && (achada.id || achada.matricula)) numMatricula = achada.id || achada.matricula;
+                            } catch (_) {}
+                        }
+                        if (!numMatricula) numMatricula = 'REG-' + String(Date.now()).slice(-6);
                         payload.id = numMatricula;
+                        if (nucleoAlvoId && _cacheNucleos) {
+                            const nCached = _cacheNucleos.find(n => String(n.id) === String(nucleoAlvoId));
+                            if (nCached) nCached.inscritos = (Number(nCached.inscritos) || 0) + 1;
+                        }
                     }
 
                     // Exibe tela final
@@ -4251,7 +4461,7 @@
                         document.getElementById('sucessoDesc').textContent = 'Os dados da sua matrícula foram alterados com êxito na Associação Nacional União.';
                     } else {
                         document.getElementById('sucessoTitulo').textContent = 'Matrícula Realizada com Sucesso!';
-                        document.getElementById('sucessoDesc').textContent = 'Sua inscrição oficial foi confirmada e registrada no banco de dados da AUNI.';
+                        document.getElementById('sucessoDesc').textContent = 'Sua inscrição foi confirmada pela Associação Nacional União (AUNI).';
                     }
 
                     document.getElementById('sucessoNumeroMatricula').textContent = `Matrícula Oficial: #${numMatricula}`;
@@ -4295,7 +4505,7 @@
                     alert('Houve uma falha na conexão com o servidor da AUNI. Verifique sua conexão e tente novamente.');
                 } finally {
                     btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = '<i data-lucide="check-circle" style="width:18px;height:18px;"></i> Concluir Matrícula';
+                    btnSubmit.innerHTML = '<i data-lucide="check-circle" style="width:18px;height:18px;"></i> <span id="btnSubmitEnrollText">Concluir Matrícula</span>';
                     if (window.lucide) lucide.createIcons();
                 }
             });
@@ -4369,8 +4579,11 @@
                     nascInput?.focus();
                     return false;
                 }
-                if (idadeCalc < 7 || idadeCalc > 20) {
-                    alert(`Inscrição bloqueada: A data informada indica ${idadeCalc} anos. As inscrições nesta iniciativa da AUNI são exclusivas para a faixa de 7 a 20 anos completos.`);
+                const minProj = (currentSelectedProject?.idade_min !== undefined && currentSelectedProject?.idade_min !== null && currentSelectedProject?.idade_min !== '') ? Number(currentSelectedProject.idade_min) : null;
+                const maxProj = (currentSelectedProject?.idade_max !== undefined && currentSelectedProject?.idade_max !== null && currentSelectedProject?.idade_max !== '') ? Number(currentSelectedProject.idade_max) : null;
+                if ((minProj !== null && idadeCalc < minProj) || (maxProj !== null && idadeCalc > maxProj)) {
+                    const faixaMsg = (minProj !== null && maxProj !== null) ? `${minProj} a ${maxProj} anos completos` : (minProj !== null ? `a partir de ${minProj} anos` : `até ${maxProj} anos`);
+                    alert(`Inscrição bloqueada: A data informada indica ${idadeCalc} anos. As inscrições nesta iniciativa da AUNI destinam-se à faixa de ${faixaMsg}.`);
                     nascInput?.focus();
                     return false;
                 }
@@ -4464,9 +4677,23 @@
                     alert('Por favor, selecione uma modalidade esportiva desejada.');
                     return false;
                 }
-                if (!document.getElementById('hidden_nucleo_id')?.value) {
+                const nId = document.getElementById('hidden_nucleo_id')?.value;
+                if (!nId) {
                     alert('Por favor, selecione o núcleo / bairro para as aulas.');
                     return false;
+                }
+                const todosNucleos = (_cacheNucleos && _cacheNucleos.length > 0) ? _cacheNucleos : NUCLEOS_CATALOGO_AUNI;
+                const nAlvo = todosNucleos.find(n => String(n.id) === String(nId));
+                if (nAlvo) {
+                    const infoVagas = calcularVagasNucleo(nAlvo);
+                    const modoEdicaoAtivo = (document.getElementById('hidden_modo_edicao')?.value === 'true');
+                    const matEditId = document.getElementById('hidden_matricula_id')?.value;
+                    const matOrig = (currentMatriculasList || []).find(m => String(m.id) === String(matEditId)) || window._ultimoPayloadMatricula;
+                    const mesmoNucleo = modoEdicaoAtivo && matOrig && String(matOrig.nucleo_id) === String(nId);
+                    if (infoVagas.esgotado && !mesmoNucleo) {
+                        alert(`Atenção: O núcleo "${nAlvo.nome || 'selecionado'}" atingiu a capacidade máxima (${infoVagas.inscritos}/${infoVagas.vagasTotais}, incluindo 50% de reserva). Escolha outro núcleo.`);
+                        return false;
+                    }
                 }
             }
 
@@ -4492,39 +4719,154 @@
             const modal = document.getElementById('modalSolicitarEdicao');
             const btnFechar = document.getElementById('btnFecharModalEdicao');
             const btnEnviar = document.getElementById('btnEnviarWhatsAppPedagogico');
+            if (!modal) return;
 
-            btnFechar.onclick = () => { modal.style.display = 'none'; };
+            const showSolFeedback = (ok, msg) => {
+                const fb = document.getElementById('solicitacaoFeedbackBox');
+                if (!fb) return;
+                fb.style.display = 'block';
+                if (ok) {
+                    fb.style.background = '#ecfdf5';
+                    fb.style.color = '#065f46';
+                    fb.style.border = '1px solid #a7f3d0';
+                } else {
+                    fb.style.background = '#fef2f2';
+                    fb.style.color = '#991b1b';
+                    fb.style.border = '1px solid #fecaca';
+                }
+                fb.textContent = msg;
+            };
+
+            if (btnFechar) btnFechar.onclick = () => { modal.style.display = 'none'; };
             modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
 
-            btnEnviar.onclick = () => {
-                const motivo = document.getElementById('solicitacao_motivo').value.trim();
-                const zapRetorno = document.getElementById('solicitacao_whatsapp').value.trim();
+            if (btnEnviar) {
+                btnEnviar.onclick = async () => {
+                    const motEl = document.getElementById('solicitacao_motivo');
+                    const zapEl = document.getElementById('solicitacao_whatsapp');
+                    const motivo = (motEl?.value || '').trim();
+                    const zapRetorno = (zapEl?.value || '').trim();
 
-                if (!motivo) {
-                    alert('Por favor, descreva brevemente o que você deseja alterar.');
-                    document.getElementById('solicitacao_motivo').focus();
-                    return;
-                }
+                    if (motivo.length < 5) {
+                        showSolFeedback(false, 'Por favor, descreva com mais detalhes o que deseja alterar (mínimo 5 caracteres).');
+                        motEl?.focus();
+                        return;
+                    }
+                    if (zapRetorno && typeof validarTelefone === 'function' && !validarTelefone(zapRetorno)) {
+                        showSolFeedback(false, 'Informe um telefone/WhatsApp válido com DDD (ex: (21) 99876-5432) ou deixe em branco.');
+                        zapEl?.focus();
+                        return;
+                    }
 
-                const matId = matriculaParaSolicitarEdicao?.id || '';
-                const alunoNome = matriculaParaSolicitarEdicao?.aluno_nome || currentStudentData?.nome || '';
-                const alunoCpf = formatarCPF(currentStudentData?.cpf || '');
+                    const mObj = matriculaParaSolicitarEdicao || {};
+                    const matId = String(mObj.id || mObj.matricula || '').trim();
+                    const cpfLimpo = String(mObj.aluno_cpf || mObj.cpf || currentStudentData?.cpf || '').replace(/\D/g, '');
+                    const alunoNome = String(mObj.aluno_nome || mObj.nome || currentStudentData?.nome || '').trim();
+                    const rsl = (typeof resolverDadosMatricula === 'function') ? resolverDadosMatricula(mObj) : {};
 
-                const textoMensagem = `Olá, Coordenação Pedagógica da AUNI!\n\nSolicito autorização para alteração cadastral referente à matrícula #${matId}.\n\nParticipante: ${alunoNome}\nCPF: ${alunoCpf}\nContato: ${zapRetorno}\n\nO que desejo alterar:\n${motivo}`;
+                    const payloadSol = {
+                        instituto: 'AUNI',
+                        matricula_id: matId,
+                        is_evento: Boolean(mObj.is_evento || rsl?.isEventoItem),
+                        projeto_id: mObj.projeto_id ? Number(mObj.projeto_id) : null,
+                        projeto_nome: rsl?.projNome || mObj.projeto_nome || null,
+                        nucleo_id: (mObj.local_evento_id || mObj.nucleo_id) ? Number(mObj.local_evento_id || mObj.nucleo_id) : null,
+                        nucleo_nome: rsl?.nucNome || mObj.nucleo_nome || null,
+                        modalidade_id: (mObj.modalidade_id || rsl?.modId) ? Number(mObj.modalidade_id || rsl?.modId) : null,
+                        modalidade_nome: rsl?.modNome || mObj.modalidade_nome || null,
+                        aluno_nome: alunoNome,
+                        aluno_cpf: cpfLimpo,
+                        whatsapp_retorno: zapRetorno.replace(/\D/g, ''),
+                        motivo
+                    };
 
-                // Redireciona para o WhatsApp da AUNI
-                const zapUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(textoMensagem)}`;
-                window.open(zapUrl, '_blank');
-                modal.style.display = 'none';
-            };
+                    const fbBox = document.getElementById('solicitacaoFeedbackBox');
+                    if (fbBox) fbBox.style.display = 'none';
+
+                    btnEnviar.disabled = true;
+                    btnEnviar.innerHTML = '<i data-lucide="loader-2" class="spin" style="width: 17px; height: 17px;"></i><span>Enviando...</span>';
+                    if (window.lucide) lucide.createIcons();
+
+                    const ctrl = new AbortController();
+                    const timer = setTimeout(() => ctrl.abort(), 15000);
+                    try {
+                        const resp = await fetch(API.enviarSolicitacaoEdicao, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payloadSol),
+                            signal: ctrl.signal
+                        });
+                        const data = await resp.json().catch(() => null);
+                        if (!resp.ok || !data || !data.success) {
+                            throw new Error(data?.message || ('Falha ao registrar solicitação (HTTP ' + resp.status + ')'));
+                        }
+
+                        const prot = data.protocolo || ('#' + data.id);
+                        showSolFeedback(true, `Solicitação registrada com sucesso (${prot})! Seu pedido já consta na fila da Coordenação Pedagógica da AUNI.`);
+                        if (motEl) motEl.disabled = true;
+                        if (zapEl) zapEl.disabled = true;
+                        btnEnviar.style.display = 'none';
+
+                        document.querySelectorAll('.btn-request-action').forEach((cardBtn) => {
+                            const oc = cardBtn.getAttribute('onclick') || '';
+                            if (matId && oc.includes("'" + matId + "'")) {
+                                cardBtn.innerHTML = '<i data-lucide="check-circle" style="width: 15px; height: 15px;"></i><span>Solicitação Enviada (' + prot + ')</span>';
+                            }
+                        });
+                        if (window.lucide) lucide.createIcons();
+                    } catch (err) {
+                        console.error('Erro ao registrar solicitação:', err);
+                        showSolFeedback(false, 'Não foi possível enviar sua solicitação agora (' + (err?.message || 'erro de rede') + '). Tente novamente.');
+                        btnEnviar.disabled = false;
+                        btnEnviar.innerHTML = '<i data-lucide="send" style="width: 17px; height: 17px;"></i><span>Enviar Solicitação</span>';
+                        if (window.lucide) lucide.createIcons();
+                    } finally {
+                        clearTimeout(timer);
+                    }
+                };
+            }
         }
 
         function abrirModalSolicitacao(matId, nomeAluno) {
-            matriculaParaSolicitarEdicao = currentMatriculasList.find(m => String(m.id) === String(matId)) || { id: matId, aluno_nome: nomeAluno };
-            document.getElementById('modalMatriculaId').textContent = '#' + matId;
-            document.getElementById('solicitacao_motivo').value = '';
-            document.getElementById('solicitacao_whatsapp').value = formatarTelefoneValor(matriculaParaSolicitarEdicao.whatsapp || '');
-            document.getElementById('modalSolicitarEdicao').style.display = 'flex';
+            matriculaParaSolicitarEdicao = (currentMatriculasList || []).find(m => String(m.id) === String(matId)) || { id: matId, aluno_nome: nomeAluno };
+            const isEvModal = Boolean(matriculaParaSolicitarEdicao?.is_evento);
+            const displayIdModal = isEvModal ? (matriculaParaSolicitarEdicao?.inscricao_id_legado || matId) : matId;
+
+            const descEl = document.getElementById('modalSolicitarDesc');
+            if (descEl) {
+                descEl.innerHTML = isEvModal
+                    ? `Esta inscrição pertence ao evento oficial <strong id="modalMatriculaId">#${escapeHTML(String(displayIdModal))}</strong>. Informe abaixo o que deseja alterar para análise da Coordenação Pedagógica da AUNI.`
+                    : `O prazo de edição direta e imediata (6 horas) já encerrou para a matrícula <strong id="modalMatriculaId">#${escapeHTML(String(displayIdModal))}</strong>. Para preservar a segurança e o planejamento pedagógico, informe abaixo o que deseja alterar para análise da Coordenação Pedagógica da AUNI.`;
+            } else {
+                const lbl = document.getElementById('modalMatriculaId');
+                if (lbl) lbl.textContent = '#' + displayIdModal;
+            }
+
+            const mot = document.getElementById('solicitacao_motivo');
+            if (mot) {
+                mot.value = '';
+                mot.disabled = false;
+            }
+            const zap = document.getElementById('solicitacao_whatsapp');
+            const zapOrig = matriculaParaSolicitarEdicao.whatsapp || matriculaParaSolicitarEdicao.telefone || currentStudentData?.dados_recentes?.whatsapp || '';
+            if (zap) {
+                zap.value = formatarTelefoneValor(zapOrig);
+                zap.disabled = false;
+            }
+            const fbBox = document.getElementById('solicitacaoFeedbackBox');
+            if (fbBox) {
+                fbBox.style.display = 'none';
+                fbBox.textContent = '';
+            }
+            const btnEnviar = document.getElementById('btnEnviarWhatsAppPedagogico');
+            if (btnEnviar) {
+                btnEnviar.style.display = 'inline-flex';
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = '<i data-lucide="send" style="width: 17px; height: 17px;"></i><span>Enviar Solicitação</span>';
+                if (window.lucide) lucide.createIcons();
+            }
+            const mod = document.getElementById('modalSolicitarEdicao');
+            if (mod) mod.style.display = 'flex';
         }
 
         // ── EMISSÃO DA FICHA OFICIAL DE MATRÍCULA EM PDF (2 PÁGINAS A4 - AUNI AZUL) ──
@@ -4553,12 +4895,13 @@
 
             const win = window.open('', '_blank');
             if (win) {
-                win.document.write(`<!DOCTYPE html><html><head><title>${tituloInicial}</title></head><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:90vh;"><div style="text-align:center;"><h2>⏳ Gerando Ficha Oficial de Matrícula...</h2><p style="color:#666;">Buscando registros da Associação Nacional União (AUNI).</p></div></body></html>`);
+                win.document.write(`<!DOCTYPE html><html><head><title>${escapeHTML(tituloInicial)}</title></head><body style="font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:90vh;"><div style="text-align:center;"><h2>Gerando Ficha Oficial de Matrícula...</h2><p style="color:#666;">Buscando registros da Associação Nacional União (AUNI).</p></div></body></html>`);
                 win.document.close();
                 try { win.document.title = tituloInicial; } catch(e){}
             }
 
             try {
+                await carregarCachesAUNI();
                 if (!d) {
                     const resp = await fetch(`${API.buscarMatriculaId}?id=${encodeURIComponent(matId)}&instituto=AUNI`);
                     const json = await resp.json();
@@ -4571,388 +4914,7 @@
             }
         }
 
-        function gerarFichaPDFAUNI(d, winTarget) {
-            const win = winTarget || window.open('', '_blank');
-            if (!win) {
-                alert('Por favor, autorize pop-ups para imprimir sua Ficha Oficial em PDF.');
-                return;
-            }
-
-            const tituloArquivo = construirNomeArquivoMatricula(d);
-            const numMatricula = String(d.id || d.matricula || '000000');
-            let modNome = d.modalidade_nome || d.modalidade;
-            let nucNome = d.nucleo_nome || d.nucleo;
-            if (d.nucleo_id) {
-                const nId = Number(d.nucleo_id);
-                const meta = AUNI_METADATA_MAP[nId] || NUCLEOS_CATALOGO_AUNI.find(c => Number(c.id) === nId);
-                if (meta) {
-                    if (!nucNome || nucNome === d.bairro) {
-                        nucNome = `${meta.nome || meta.bairro} (${meta.cidade})`;
-                    }
-                    if (!modNome) {
-                        modNome = meta.modalidade_nome || (meta.modalidade_id === 13 ? 'Voleibol' : 'Futsal');
-                    }
-                }
-            }
-            if (!modNome) modNome = (Number(d.modalidade_id) === 13 ? 'Voleibol' : 'Futsal');
-            if (!nucNome) nucNome = d.bairro || 'Núcleo Oficial AUNI';
-            const turno = d.turno || 'A Definir';
-            const nAluno = d.aluno_nome || d.nome || currentStudentData?.nome || 'Não informado';
-            const cAluno = formatarCPF(d.aluno_cpf || d.cpf || currentStudentData?.cpf || '');
-            const dNasc = formatarDataInput(d.data_nascimento || currentStudentData?.data_nascimento || '');
-            const idade = d.idade ? `${d.idade} anos` : (calcularIdade(dNasc) ? `${calcularIdade(dNasc)} anos` : 'Não informada');
-            const sexo = d.sexo || 'Não informado';
-            const tel = d.whatsapp || '';
-            const email = d.email || 'Não informado';
-            const end = `${d.endereco || ''}, ${d.numero || ''}${d.complemento ? ' (' + d.complemento + ')' : ''} - ${d.bairro || ''}, ${d.cidade || ''} / ${d.uf || 'MG'}`;
-            const cep = d.cep || '';
-
-            const tCamisa = d.tamanho_camisa || 'M';
-            const tCalca = d.tamanho_calca || '38';
-            const tCalcado = d.tamanho_calcado || '---';
-
-            const uMed = d.uso_medicacao ? (d.uso_medicacao + (d.uso_medicacao_detalhes ? ': ' + d.uso_medicacao_detalhes : '')) : 'Não';
-            const pAlerg = d.possui_alergias ? (d.possui_alergias + (d.possui_alergias_detalhes ? ': ' + d.possui_alergias_detalhes : '')) : 'Não';
-            const pSaude = d.plano_saude ? (d.plano_saude + (d.plano_saude_detalhes ? ': ' + d.plano_saude_detalhes : '')) : 'Não';
-            const aMed = d.acompan_medico ? (d.acompan_medico + (d.acompan_medico_detalhes ? ': ' + d.acompan_medico_detalhes : '')) : 'Não';
-            const rFis = d.restricao_fisica ? (d.restricao_fisica + (d.restricao_fisica_detalhes ? ': ' + d.restricao_fisica_detalhes : '')) : 'Não';
-            const nEsp = d.necessidade_especial ? (d.necessidade_especial + (d.necessidade_especial_detalhes ? ': ' + d.necessidade_especial_detalhes : '')) : 'Não';
-
-            const nResp = d.resp_nome || '';
-            const cResp = formatarCPF(d.resp_cpf || '');
-            const parResp = d.grau_parentesco || d.resp_parentesco || d.parentesco || (nResp ? 'Responsável Legal' : '');
-
-            const qrUrl = 'https://auni.plataformaintegra.com.br/autenticador.html?id=' + numMatricula + '&inst=auni';
-            const qrImg = 'https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=' + encodeURIComponent(qrUrl);
-            const dataHoje = new Date().toLocaleDateString('pt-BR');
-            const dataHoraHoje = new Date().toLocaleString('pt-BR');
-            const createdAtStr = d.created_at ? new Date(d.created_at).toLocaleString('pt-BR') : dataHoraHoje;
-            const protocolo = 'AUNI-' + numMatricula.padStart(6, '0') + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
-
-            win.document.open();
-            win.document.write(`
-                <!DOCTYPE html>
-                <html lang="pt-BR">
-                <head>
-                    <meta charset="UTF-8">
-                    <title>${tituloArquivo}</title>
-                    <style>
-                        @page { size: A4; margin: 8mm 10mm; }
-                        * {
-                            box-sizing: border-box;
-                            margin: 0;
-                            padding: 0;
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                            color-adjust: exact !important;
-                        }
-                        body {
-                            font-family: sans-serif;
-                            font-size: 9pt;
-                            color: #000;
-                            line-height: 1.3;
-                            background: #fff;
-                            padding: 10px;
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                            color-adjust: exact !important;
-                        }
-                        .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 2.5px solid #1c3388; padding-bottom: 6px; margin-bottom: 10px; }
-                        .logo-box { display: flex; align-items: center; gap: 8px; }
-                        .logo-auni-dark {
-                            background: #1c3388 !important;
-                            background-color: #1c3388 !important;
-                            border: 2px solid #1c3388 !important;
-                            padding: 4px 10px;
-                            border-radius: 6px;
-                            display: inline-flex;
-                            align-items: center;
-                            justify-content: center;
-                            -webkit-print-color-adjust: exact !important;
-                            print-color-adjust: exact !important;
-                            color-adjust: exact !important;
-                        }
-                        .logo-box img { max-height: 36px; }
-                        .logo-auni-dark img {
-                            max-height: 36px;
-                            display: block;
-                            filter: drop-shadow(0 0 1px #12225e);
-                        }
-                        .title-right { text-align: right; }
-                        .main-title { font-size: 13pt; font-weight: 800; color: #1c3388; }
-                        .sub-title { font-size: 8.5pt; color: #475569; font-weight: 600; }
-                        .box { border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 8px; padding: 6px 10px; background: #fdfdfd; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-                        .box-title { font-size: 8.5pt; font-weight: 800; color: #1c3388; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin-bottom: 6px; text-transform: uppercase; }
-                        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px 10px; }
-                        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
-                        .f-item { font-size: 8.5pt; }
-                        .f-lbl { font-weight: 700; color: #1c3388; }
-                        .qr-row { display: flex; align-items: center; gap: 12px; background: #f0faff; border: 1px dashed #1c3388; padding: 6px 10px; border-radius: 6px; margin-top: 6px; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-                        .qr-row img { width: 54px; height: 54px; }
-                        .page-break { page-break-before: always; }
-                        @media print {
-                            * {
-                                -webkit-print-color-adjust: exact !important;
-                                print-color-adjust: exact !important;
-                                color-adjust: exact !important;
-                            }
-                            body {
-                                -webkit-print-color-adjust: exact !important;
-                                print-color-adjust: exact !important;
-                            }
-                            .logo-auni-dark {
-                                background: #1c3388 !important;
-                                background-color: #1c3388 !important;
-                                border: 2px solid #1c3388 !important;
-                                -webkit-print-color-adjust: exact !important;
-                                print-color-adjust: exact !important;
-                            }
-                            .no-print { display: none !important; }
-                        }
-                        /* ── DESIGN ENGINEERING & SKELETONS (EMIL KOWALSKI / UI-UX PRO MAX) ── */
-        :root {
-            --ease-out-expo: cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        h1, h2, h3, .title-hero, .pane-title {
-            letter-spacing: -0.02em;
-        }
-        .desc-clean, .pane-subtitle {
-            max-width: 65ch;
-        }
-        .cpf-field-native, #studentDisplayCPF, #sucessoNumeroMatricula, .tile-vagas-badge, .tabular-nums {
-            font-variant-numeric: tabular-nums;
-        }
-        .btn-primary-clean, .btn-secondary-clean, .btn-choose-project, .btn-pdf-print-clean,
-        .btn-edit-action, .btn-request-action, .pill-btn-yn, .btn-switch-cpf {
-            transition: transform 150ms var(--ease-out-expo), background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease !important;
-        }
-        .btn-primary-clean:active:not(:disabled), .btn-secondary-clean:active:not(:disabled),
-        .btn-choose-project:active:not(:disabled), .btn-pdf-print-clean:active:not(:disabled),
-        .btn-edit-action:active:not(:disabled), .btn-request-action:active:not(:disabled),
-        .pill-btn-yn:active:not(:disabled), .project-tile:active:not(.disabled),
-        .nucleo-square-tile:active:not(.esgotado), .modalidade-sport-card:active {
-            transform: scale(0.97);
-        }
-        @keyframes portalSkeletonShimmer {
-            0% { transform: translate3d(-75%, 0, 0); }
-            100% { transform: translate3d(75%, 0, 0); }
-        }
-        @keyframes portalSkeletonBreathe {
-            0%, 100% { opacity: 0.95; }
-            50% { opacity: 0.65; }
-        }
-        .portal-skeleton {
-            position: relative;
-            overflow: hidden;
-            background: #e2e8f0;
-            border-radius: 8px;
-            animation: portalSkeletonBreathe 1.6s ease-in-out infinite;
-        }
-        .portal-skeleton::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            left: -50%;
-            width: 200%;
-            background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.4) 35%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0.4) 65%, transparent 100%);
-            animation: portalSkeletonShimmer 1.35s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-        }
-        .portal-skeleton-card {
-            background: #ffffff;
-            border: 1.5px solid var(--border-pencil);
-            border-radius: var(--radius-input);
-            padding: 18px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .portal-skeleton-scanline {
-            position: relative;
-            height: 2px;
-            width: 100%;
-            overflow: hidden;
-            background: rgba(148, 163, 184, 0.2);
-            border-radius: 999px;
-            margin-top: 8px;
-        }
-        .portal-skeleton-scanline::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%);
-            animation: portalSkeletonShimmer 1.2s ease-in-out infinite;
-        }
-    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <div class="logo-box">
-                            <div class="logo-auni-dark" style="background:#1c3388 !important;background-color:#1c3388 !important;border:2px solid #1c3388 !important;border-radius:6px;padding:4px 10px;display:inline-flex;align-items:center;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
-                                <img src="https://plataformaintegra.com.br/logo_auni.png" alt="AUNI" style="max-height:36px;display:block;">
-                            </div>
-                            <span style="font-weight:bold;color:#74d4fd;font-size:14pt;">×</span>
-                            <img src="https://plataformaintegra.com.br/logo_integra_simbolo.gif" alt="INTEGRA" style="max-height:36px;">
-                        </div>
-                        <div class="title-right">
-                            <div class="main-title">FICHA OFICIAL DE MATRÍCULA</div>
-                            <div class="sub-title">Associação Nacional União (AUNI)</div>
-                        </div>
-                    </div>
-
-                    <div class="box" style="background:#f0faff;border-color:#1c3388;">
-                        <div class="grid-3">
-                            <div class="f-item"><span class="f-lbl">Nº Matrícula:</span> <strong>#${numMatricula}</strong></div>
-                            <div class="f-item"><span class="f-lbl">Projeto:</span> <strong>ASSOCIAÇÃO NACIONAL UNIÃO - AUNI</strong></div>
-                            <div class="f-item"><span class="f-lbl">Modalidade:</span> <strong>${modNome}</strong></div>
-                            <div class="f-item"><span class="f-lbl">Núcleo / Bairro:</span> ${nucNome}</div>
-                            <div class="f-item"><span class="f-lbl">Turno:</span> ${turno}</div>
-                            <div class="f-item"><span class="f-lbl">Emissão:</span> ${dataHoje}</div>
-                        </div>
-                    </div>
-
-                    <div class="box">
-                        <div class="box-title">1. Dados Cadastrais do Participante</div>
-                        <div class="grid-3">
-                            <div class="f-item"><span class="f-lbl">Nome:</span> ${nAluno}</div>
-                            <div class="f-item"><span class="f-lbl">CPF:</span> ${cAluno}</div>
-                            <div class="f-item"><span class="f-lbl">Nascimento:</span> ${dNasc || '---'}</div>
-                            <div class="f-item"><span class="f-lbl">Idade:</span> ${idade}</div>
-                            <div class="f-item"><span class="f-lbl">Sexo:</span> ${sexo}</div>
-                            <div class="f-item"><span class="f-lbl">WhatsApp:</span> ${tel || '---'}</div>
-                        </div>
-                    </div>
-
-                    <div class="box">
-                        <div class="box-title">2. Endereço e Contato</div>
-                        <div class="grid-2">
-                            <div class="f-item"><span class="f-lbl">Endereço:</span> ${end}</div>
-                            <div class="f-item"><span class="f-lbl">CEP:</span> ${cep}</div>
-                            <div class="f-item"><span class="f-lbl">E-mail:</span> ${email}</div>
-                        </div>
-                    </div>
-
-                    <div class="box">
-                        <div class="box-title">3. Fardamento e Histórico de Saúde</div>
-                        <div class="grid-3">
-                            <div class="f-item"><span class="f-lbl">Camisa:</span> <strong>${tCamisa}</strong></div>
-                            <div class="f-item"><span class="f-lbl">Bermuda:</span> <strong>${tCalca}</strong></div>
-                            <div class="f-item"><span class="f-lbl">Calçado:</span> <strong>Nº ${tCalcado}</strong></div>
-                            <div class="f-item"><span class="f-lbl">Medicamento:</span> ${uMed}</div>
-                            <div class="f-item"><span class="f-lbl">Alergias:</span> ${pAlerg}</div>
-                            <div class="f-item"><span class="f-lbl">Plano de Saúde:</span> ${pSaude}</div>
-                            <div class="f-item"><span class="f-lbl">Tratamento Médico:</span> ${aMed}</div>
-                            <div class="f-item"><span class="f-lbl">Restrição Física:</span> ${rFis}</div>
-                            <div class="f-item"><span class="f-lbl">Necessidade Especial:</span> ${nEsp}</div>
-                        </div>
-                    </div>
-
-                    ${nResp ? `
-                    <div class="box">
-                        <div class="box-title">4. Responsável Legal (Menor de 18 Anos)</div>
-                        <div class="grid-3">
-                            <div class="f-item"><span class="f-lbl">Responsável:</span> ${nResp}</div>
-                            <div class="f-item"><span class="f-lbl">CPF:</span> ${cResp}</div>
-                            <div class="f-item"><span class="f-lbl">Parentesco:</span> ${parResp || 'Responsável Legal'}</div>
-                        </div>
-                    </div>` : ''}
-
-                    <div class="qr-row">
-                        <img src="${qrImg}" alt="QR Code">
-                        <div>
-                            <div style="font-weight:800;font-size:8.5pt;color:#1c3388;">AUTENTICAÇÃO DIGITAL OFICIAL (AUNI)</div>
-                            <div style="font-size:7.5pt;color:#475569;">Validação eletrônica da matrícula nos registros oficiais da Associação Nacional União.</div>
-                            <div style="font-size:7.5pt;font-family:monospace;margin-top:2px;"><a href="${qrUrl}" target="_blank" style="color:#1c3388;text-decoration:none;">${qrUrl}</a></div>
-                        </div>
-                    </div>
-
-                    <div class="page-break"></div>
-
-                    <div class="header">
-                        <div class="logo-box">
-                            <div class="logo-auni-dark" style="background:#1c3388 !important;background-color:#1c3388 !important;border:2px solid #1c3388 !important;border-radius:6px;padding:4px 10px;display:inline-flex;align-items:center;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
-                                <img src="https://plataformaintegra.com.br/logo_auni.png" alt="AUNI" style="max-height:36px;display:block;">
-                            </div>
-                            <span style="font-weight:bold;color:#74d4fd;font-size:14pt;">×</span>
-                            <img src="https://plataformaintegra.com.br/logo_integra_simbolo.gif" alt="INTEGRA" style="max-height:36px;">
-                        </div>
-                        <div class="title-right">
-                            <div class="main-title" style="font-size: 11pt;">DECLARAÇÃO DE RESPONSABILIDADE, PARTICIPAÇÃO E AUTORIZAÇÃO</div>
-                            <div class="sub-title">ASSOCIAÇÃO NACIONAL UNIÃO – AUNI</div>
-                        </div>
-                    </div>
-
-                    <div class="box" style="font-size: 6.8pt; line-height: 1.25; color: #1e293b; text-align: justify; margin-bottom: 6px; padding: 6px 9px;">
-                        <p style="margin-bottom: 5px;">A presente <strong>Declaração de Responsabilidade, Participação e Autorização</strong> estabelece as condições aplicáveis à participação nas atividades, projetos esportivos, oficinas e eventos gratuitos promovidos ou executados pela <strong>Associação Nacional União – AUNI</strong> (pessoa jurídica de direito privado sem fins lucrativos). Aplica-se aos participantes e, no caso de crianças e adolescentes, aos seus pais ou responsáveis legais, que realizam a matrícula e manifestam o aceite em seu nome, observada a legislação brasileira aplicável.</p>
-
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px;">
-                            <div>
-                                <p style="margin-bottom: 4px;"><strong>1. AUTORIZAÇÃO E CONDIÇÕES DE PARTICIPAÇÃO:</strong> Autorizo a participação do(a) aluno(a) nas atividades esportivas, oficinas, palestras, eventos e competições promovidas pela AUNI. A participação é gratuita e condicionada às regras, horários, faixas etárias e frequência mínima definida para cada projeto.</p>
-
-                                <p style="margin-bottom: 4px;"><strong>2. PARTICIPAÇÃO DE MENORES (ECA):</strong> No caso de menor de 18 anos, a matrícula é realizada pelo responsável legal nos termos da Lei nº 8.069/1990 (ECA). A saída dos locais de atividade observará as normas de acompanhamento e segurança do núcleo.</p>
-
-                                <p style="margin-bottom: 4px;"><strong>3. SAÚDE, APTIDÃO E PRIMEIROS SOCORROS:</strong> O declarante atesta que as informações de saúde são autênticas e que o aluno está apto para práticas esportivas. Ciente dos riscos habituais à atividade física (quedas, contusões e esforço). Em situações de emergência, a equipe técnica está autorizada a prestar primeiros socorros e acionar assistência médica de urgência.</p>
-
-                                <p style="margin-bottom: 4px;"><strong>4. USO INSTITUCIONAL DE IMAGEM E VOZ:</strong> Autorizo, de forma gratuita, o uso da imagem e voz do participante exclusivamente para relatórios, prestação de contas públicas perante parceiros/financiadores e divulgação institucional da AUNI, vedada a exploração comercial.</p>
-
-                                <p style="margin-bottom: 4px;"><strong>5. PROTEÇÃO DE DADOS PESSOAIS (LGPD):</strong> O tratamento dos dados cadastrais e de saúde observa rigorosamente a Lei nº 13.709/2018 para finalidades de organização de turmas, controle de frequência, segurança e prestação de contas aos órgãos públicos e parceiros.</p>
-                            </div>
-
-                            <div>
-                                <p style="margin-bottom: 4px;"><strong>6. FREQUÊNCIA, CONDUTA E CONVIVÊNCIA:</strong> O participante compromete-se a cumprir os horários, zelar pelos materiais e manter conduta de respeito mútuo com todos. São vedados atos de violência, discriminação ou indisciplina, sob pena de advertência ou desligamento da vaga.</p>
-
-                                <p style="margin-bottom: 4px;"><strong>7. MATERIAIS E FARDAMENTO:</strong> Os uniformes e materiais eventualmente disponibilizados devem ser conservados com zelo para uso exclusivo durante as atividades do projeto.</p>
-
-                                <p style="margin-bottom: 4px;"><strong>8. ATIVIDADES EXTERNAS:</strong> Atividades externas do cronograma oficial serão previamente informadas, aplicando-se as mesmas exigências e condições de segurança institucional.</p>
-
-                                <p style="margin-bottom: 4px;"><strong>9. RESPONSABILIDADES:</strong> A AUNI não responde por fatos decorrentes de dados falsos ou omissões do declarante, permanecendo vigentes as responsabilidades de cada parte.</p>
-
-                                <p style="margin-bottom: 4px;"><strong>10. ACEITE ELETRÔNICO E DECLARAÇÃO FINAL:</strong> O aceite eletrônico no formulário da plataforma possui plena validade jurídica. Declaro que todas as informações são verdadeiras, que li e compreendi as condições desta Declaração e aceito integralmente seus termos. <strong>LI, COMPREENDI E ACEITO.</strong></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
-                        <div style="border: 1.5px dashed #1c3388; background: #f0faff; padding: 7px 8px; border-radius: 6px;">
-                            <div style="font-weight: 800; font-size: 8.5pt; color: #1c3388; margin-bottom: 4px;">✓ RESPONSÁVEL: — STATUS: VALIDADA</div>
-                            <ul style="list-style: none; font-size: 7.5pt; color: #333; line-height: 1.4;">
-                                <li>• LGPD ACEITO: ${createdAtStr}</li>
-                                <li>• Veracidade ACEITO: ${createdAtStr}</li>
-                                <li>• Origem do cadastro: Portal AUNI</li>
-                                <li>• ID da Matrícula: #${numMatricula} | CPF: ${cAluno}</li>
-                                <li>• Protocolo: ${protocolo}</li>
-                            </ul>
-                            <div style="text-align: center; font-size: 7.5pt; font-weight: 800; color: #1c3388; margin-top: 8px;">ACEITE DO RESPONSÁVEL / ALUNO</div>
-                        </div>
-
-                        <div style="border: 1.5px dashed #0284c7; background: #eff6ff; padding: 8px; border-radius: 6px;">
-                            <div style="font-weight: 800; font-size: 8.5pt; color: #0369a1; margin-bottom: 4px;">✓ COORDENADOR: — DEFERIDO</div>
-                            <ul style="list-style: none; font-size: 7.5pt; color: #333; line-height: 1.4;">
-                                <li>• Triagem & Análise: Matrícula Deferida</li>
-                                <li>• Validação Institucional: Coordenador AUNI</li>
-                                <li>• Núcleo / Modalidade: ${nucNome} (${modNome})</li>
-                                <li>• Protocolo: ${protocolo}</li>
-                            </ul>
-                            <div style="text-align: center; font-size: 7.5pt; font-weight: 800; color: #0369a1; margin-top: 8px;">VALIDAÇÃO INSTITUCIONAL AUNI</div>
-                        </div>
-                    </div>
-
-                    <div class="no-print" style="text-align:center;margin-top:24px;">
-                        <button onclick="window.print()" style="background:#1c3388;color:#fff;border:none;padding:12px 28px;border-radius:8px;font-weight:800;font-size:14px;cursor:pointer;">🖨️ Imprimir / Salvar em PDF</button>
-                    </div>
-                    <script>
-                        document.title = ${JSON.stringify(tituloArquivo)};
-                        window.addEventListener('load', function() {
-                            document.title = ${JSON.stringify(tituloArquivo)};
-                        });
-                    <\/script>
-                </body>
-                </html>
-            `);
-            win.document.close();
-            try {
-                win.document.title = tituloArquivo;
-            } catch(e) {}
-        }
+        function gerarFichaPDFAUNI() {}
 
         // ── Funções de Apoio ──
         function preencher(id, val) {
@@ -5037,7 +4999,7 @@
 
         
         // ── Higienização Estrita de Data de Nascimento (Impede Anos Futuros) ──
-        function sanitizarDataNascimento(input) {
+        function sanitizarDataNascimento(input, isBlur = false) {
             if (!input || !input.value) return true;
             const v = input.value;
             const partes = v.split('-');
@@ -5048,7 +5010,12 @@
             const dStr = String(hoje.getDate()).padStart(2, '0');
             const hojeStr = `${anoAtual}-${mStr}-${dStr}`;
 
-            if (isNaN(ano) || ano > anoAtual || v > hojeStr) {
+            // Aguarda completar os 4 dígitos do ano durante a digitação no teclado (0001..0999)
+            if (!isBlur && !isNaN(ano) && ano > 0 && ano < 1000) {
+                return true;
+            }
+
+            if (isNaN(ano) || ano > anoAtual || (ano >= 1000 && v > hojeStr)) {
                 input.value = '';
                 alert(`Data de nascimento inválida! O ano informado (${ano}) não pode ser posterior ao ano atual (${anoAtual}). Selecione uma data válida.`);
                 setTimeout(() => input.focus(), 50);
@@ -5078,41 +5045,47 @@
             nascInput.max = hojeStr;
             nascInput.min = minAnoStr;
 
-            nascInput.addEventListener('change', () => sanitizarDataNascimento(nascInput));
-            nascInput.addEventListener('blur', () => sanitizarDataNascimento(nascInput));
+            nascInput.addEventListener('change', () => sanitizarDataNascimento(nascInput, false));
+            nascInput.addEventListener('blur', () => sanitizarDataNascimento(nascInput, true));
 
             const inputNascNovo = document.getElementById('inputNascNovo');
             if (inputNascNovo) {
                 inputNascNovo.max = hojeStr;
                 inputNascNovo.min = minAnoStr;
 
-                inputNascNovo.addEventListener('change', () => sanitizarDataNascimento(inputNascNovo));
-                inputNascNovo.addEventListener('blur', () => sanitizarDataNascimento(inputNascNovo));
+                inputNascNovo.addEventListener('change', () => sanitizarDataNascimento(inputNascNovo, false));
+                inputNascNovo.addEventListener('blur', () => sanitizarDataNascimento(inputNascNovo, true));
 
                 inputNascNovo.addEventListener('input', () => {
                     const fb = document.getElementById('feedbackIdadeNovo');
                     if (!fb) return;
                     if (!inputNascNovo.value) { fb.style.display = 'none'; return; }
-                    
+
                     const partes = inputNascNovo.value.split('-');
-                    if (parseInt(partes[0], 10) > anoAtual) {
-                        sanitizarDataNascimento(inputNascNovo);
+                    const ano = parseInt(partes[0], 10);
+                    if (!isNaN(ano) && ano > 0 && ano < 1000) {
+                        fb.style.display = 'none';
+                        return;
+                    }
+                    if (!isNaN(ano) && ano > anoAtual) {
+                        sanitizarDataNascimento(inputNascNovo, false);
                         return;
                     }
 
                     const id = calcularIdade(inputNascNovo.value);
                     fb.style.display = 'block';
-                    if (id === null || id < 0) {
-                        fb.style.color = 'var(--c-marrom-verm)';
+                    const minG = obterIdadeMinGlobalAtiva();
+                    if (id === null || id < 0 || id > 120) {
+                        fb.style.color = '#b91c1c';
                         fb.textContent = 'Data de nascimento inválida (ano futuro).';
-                    } else if (id < 6) {
-                        fb.style.color = 'var(--c-marrom-verm)';
-                        fb.textContent = `Idade: ${id} ano(s). Idade mínima permitida: 6 anos.`;
+                    } else if (minG !== null && id < minG) {
+                        fb.style.color = '#b91c1c';
+                        fb.textContent = `Idade: ${id} ano(s). Idade mínima permitida: ${minG} anos.`;
                     } else if (id < 18) {
-                        fb.style.color = 'var(--c-verde-escuro)';
+                        fb.style.color = '#1c3388';
                         fb.textContent = `Idade: ${id} anos (Menor de idade — Requer dados do Responsável Legal).`;
                     } else {
-                        fb.style.color = 'var(--c-verde-escuro)';
+                        fb.style.color = '#1c3388';
                         fb.textContent = `Idade: ${id} anos (Maior de idade).`;
                     }
                 });
@@ -5122,12 +5095,20 @@
                 if (!nascInput.value) {
                     const blocoResp = document.getElementById('blocoResponsavel');
                     if (blocoResp) blocoResp.style.display = 'none';
+                    const blocoAdulto = document.getElementById('blocoAdultoInfo');
+                    if (blocoAdulto) blocoAdulto.style.display = 'none';
                     ['mat_resp_nome', 'mat_resp_cpf', 'mat_resp_whatsapp'].forEach(id => {
                         const el = document.getElementById(id);
                         if (el) el.required = false;
                     });
                     const fb = document.getElementById('feedbackIdadeMat');
                     if (fb) fb.style.display = 'none';
+                    return;
+                }
+                const anoMat = parseInt((nascInput.value || '').split('-')[0], 10);
+                if (!isNaN(anoMat) && anoMat > 0 && anoMat < 1000) {
+                    const fbPartial = document.getElementById('feedbackIdadeMat');
+                    if (fbPartial) fbPartial.style.display = 'none';
                     return;
                 }
                 const idade = calcularIdade(nascInput.value);
@@ -5142,20 +5123,24 @@
                 }
                 fb.style.display = 'block';
 
-                if (idade === null || isNaN(idade) || idade < 0) {
-                    fb.style.color = 'var(--c-marrom-verm)';
+                if (idade === null || isNaN(idade) || idade < 0 || idade > 120) {
+                    fb.style.color = '#b91c1c';
                     fb.textContent = 'Data de nascimento inválida (ano futuro ou incorreto).';
                     return;
                 }
 
-                if (idade < 6) {
-                    fb.style.color = 'var(--c-marrom-verm)';
-                    fb.textContent = `Idade calculada: ${idade} ano(s). A idade mínima permitida é de 6 anos completos.`;
-                    return;
+                const minProj = (currentSelectedProject && currentSelectedProject.idade_min !== null && currentSelectedProject.idade_min !== undefined && currentSelectedProject.idade_min !== '') ? Number(currentSelectedProject.idade_min) : null;
+                const maxProj = (currentSelectedProject && currentSelectedProject.idade_max !== null && currentSelectedProject.idade_max !== undefined && currentSelectedProject.idade_max !== '') ? Number(currentSelectedProject.idade_max) : null;
+                if (minProj !== null && !isNaN(minProj) && idade < minProj) {
+                    fb.style.color = '#b91c1c';
+                    fb.textContent = `Idade calculada: ${idade} ano(s). O projeto selecionado exige mínimo de ${minProj} anos.`;
+                } else if (maxProj !== null && !isNaN(maxProj) && idade > maxProj) {
+                    fb.style.color = '#b91c1c';
+                    fb.textContent = `Idade calculada: ${idade} ano(s). O projeto selecionado permite até ${maxProj} anos.`;
+                } else {
+                    fb.style.color = '#1c3388';
+                    fb.textContent = `Idade calculada: ${idade} ano(s) completos.`;
                 }
-
-                fb.style.color = 'var(--c-verde-escuro)';
-                fb.textContent = `Idade calculada: ${idade} ano(s) completos.`;
 
                 if (currentStudentData) currentStudentData.idade = idade;
                 const isMenor = idade < 18;
@@ -5255,6 +5240,20 @@
         }
 
         let _docDropzoneFiles = [];
+        function resetDocDropzone() {
+            _docDropzoneFiles = [];
+            window._uploadedDocUrls = [];
+            const list = document.getElementById('dropzone-files-list');
+            if (list) list.innerHTML = '';
+            const countMsg = document.getElementById('dropzone-count-msg');
+            if (countMsg) countMsg.style.display = 'none';
+            const hiddenBase64 = document.getElementById('documentos_base64');
+            if (hiddenBase64) hiddenBase64.value = '';
+            const urlEl = document.getElementById('laudo_medico_url');
+            if (urlEl) urlEl.value = '';
+            const fileInput = document.getElementById('doc_file_input');
+            if (fileInput) fileInput.value = '';
+        }
         function setupDocDropzone() {
             const dropzone = document.getElementById('doc-dropzone');
             const fileInput = document.getElementById('doc_file_input');
@@ -5268,10 +5267,15 @@
                     countMsg.textContent = _docDropzoneFiles.length > 0 ? `${_docDropzoneFiles.length} arquivo(s) selecionado(s)` : '';
                     countMsg.style.display = _docDropzoneFiles.length > 0 ? 'block' : 'none';
                 }
+                const urls = _docDropzoneFiles.map(f => f._uploadedUrl).filter(Boolean);
+                window._uploadedDocUrls = urls;
+                const urlElSync = document.getElementById('laudo_medico_url');
+                if (urlElSync) urlElSync.value = urls[0] || '';
                 if (_docDropzoneFiles.length === 0) {
                     if (hiddenBase64) hiddenBase64.value = '';
                     return;
                 }
+                uploadDropzoneFilesToStorage();
                 const promises = _docDropzoneFiles.map(file => {
                     return new Promise(resolve => {
                         const reader = new FileReader();
@@ -5280,8 +5284,51 @@
                     });
                 });
                 Promise.all(promises).then(b64List => {
-                    if (hiddenBase64) hiddenBase64.value = JSON.stringify(b64List);
+                    if (hiddenBase64 && (!window._uploadedDocUrls || window._uploadedDocUrls.length < _docDropzoneFiles.length)) {
+                        hiddenBase64.value = JSON.stringify(b64List);
+                    }
                 });
+            }
+            window._uploadedDocUrls = [];
+            async function uploadDropzoneFilesToStorage() {
+                const urlEl = document.getElementById('laudo_medico_url');
+                const b64El = document.getElementById('documentos_base64');
+                const files = Array.isArray(_docDropzoneFiles) ? _docDropzoneFiles : [];
+                if (files.length === 0) {
+                    window._uploadedDocUrls = [];
+                    if (urlEl) urlEl.value = '';
+                    return;
+                }
+                for (const file of files) {
+                    if (file._uploadedUrl) continue;
+                    try {
+                        const b64 = await new Promise((res, rej) => {
+                            const r = new FileReader();
+                            r.onload = () => { const s = String(r.result || ''); res(s.includes(',') ? s.split(',')[1] : s); };
+                            r.onerror = rej;
+                            r.readAsDataURL(file);
+                        });
+                        const safeName = `auni_laudo_${Date.now()}_${Math.random().toString(36).slice(2, 6)}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+                        const resp = await fetch('https://w.ibrase.com.br/webhook/upload-storage', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ bucket: 'matriculas-laudos', fileName: safeName, mimeType: file.type || 'application/pdf', base64: b64 })
+                        });
+                        if (resp.ok) {
+                            const j = await resp.json().catch(() => ({}));
+                            const url = j?.url || j?.publicUrl || j?.data?.url || '';
+                            if (url) file._uploadedUrl = url;
+                        }
+                    } catch (err) {
+                        console.warn('Upload storage fallback:', err);
+                    }
+                }
+                const urls = _docDropzoneFiles.map(f => f._uploadedUrl).filter(Boolean);
+                window._uploadedDocUrls = urls;
+                if (urlEl) urlEl.value = urls[0] || '';
+                if (b64El && _docDropzoneFiles.length > 0 && urls.length === _docDropzoneFiles.length) {
+                    b64El.value = '';
+                }
             }
 
             function renderList() {
@@ -5289,8 +5336,15 @@
                 _docDropzoneFiles.forEach((f, i) => {
                     const chip = document.createElement('div');
                     chip.className = 'file-chip';
-                    chip.innerHTML = `<span>${f.name}</span><button type="button">&times;</button>`;
-                    chip.querySelector('button').onclick = (e) => {
+                    const span = document.createElement('span');
+                    span.title = f.name;
+                    span.textContent = f.name;
+                    const btnRemove = document.createElement('button');
+                    btnRemove.type = 'button';
+                    btnRemove.innerHTML = '&times;';
+                    chip.appendChild(span);
+                    chip.appendChild(btnRemove);
+                    btnRemove.onclick = (e) => {
                         e.stopPropagation();
                         _docDropzoneFiles.splice(i, 1);
                         renderList();
@@ -5344,20 +5398,10 @@
         let _timerContadorRetorno = null;
 
         function iniciarContadorRetornoPainel() {
-            if (_timerContadorRetorno) clearInterval(_timerContadorRetorno);
-            let seg = 300;
-            const elCont = document.getElementById('sucessoContadorSegundos');
-            if (elCont) elCont.textContent = '300';
-
-            _timerContadorRetorno = setInterval(() => {
-                seg--;
-                if (elCont) elCont.textContent = String(seg);
-                if (seg <= 0) {
-                    clearInterval(_timerContadorRetorno);
-                    _timerContadorRetorno = null;
-                    retornarAoPainelAlunoAposMatricula();
-                }
-            }, 1000);
+            if (_timerContadorRetorno) {
+                clearInterval(_timerContadorRetorno);
+                _timerContadorRetorno = null;
+            }
         }
 
         const carregarProjetosParaAluno = (idade) => carregarProjetosAUNI(idade);
@@ -5423,6 +5467,7 @@
             _lastCpfCache = null;
             _cpfConfirmadoPeloUsuario = null;
 
+            if (typeof resetDocDropzone === 'function') resetDocDropzone();
             const form = document.getElementById('formMatriculaAUNI');
             if (form) form.reset();
 
@@ -5442,6 +5487,16 @@
 
             esconderFeedback();
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         function escapeQuotes(str) {
@@ -5507,6 +5562,7 @@
                 });
                 const boxUpload = document.getElementById('boxUploadLaudo');
                 if (boxUpload) boxUpload.style.display = 'none';
+                window._uploadedDocUrls = [];
                 const urlInput = document.getElementById('laudo_medico_url');
                 if (urlInput) urlInput.value = '';
                 if (typeof window.syncNomeSocialUI === 'function') window.syncNomeSocialUI();
@@ -5612,38 +5668,6 @@
                 return true;
             };
 
-            const docFileInput = document.getElementById('doc_file_input');
-            if (docFileInput) {
-                docFileInput.addEventListener('change', async function() {
-                    const file = (typeof _docDropzoneFiles !== 'undefined' && _docDropzoneFiles[0]) || (this.files && this.files[0]);
-                    if (!file) return;
-                    try {
-                        const b64 = await new Promise((res, rej) => {
-                            const r = new FileReader();
-                            r.onload = () => { const s = String(r.result || ''); res(s.includes(',') ? s.split(',')[1] : s); };
-                            r.onerror = rej;
-                            r.readAsDataURL(file);
-                        });
-                        const safeName = `auni_laudo_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-                        const resp = await fetch('https://w.ibrase.com.br/webhook/upload-storage', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ bucket: 'matriculas-documentos', fileName: safeName, mimeType: file.type || 'application/pdf', base64: b64 })
-                        });
-                        if (resp.ok) {
-                            const j = await resp.json();
-                            const url = j?.url || j?.publicUrl || j?.data?.url || '';
-                            if (url) {
-                                const urlEl = document.getElementById('laudo_medico_url');
-                                if (urlEl) urlEl.value = url;
-                                const b64El = document.getElementById('documentos_base64');
-                                if (b64El) b64El.value = '';
-                            }
-                        }
-                    } catch(err) { console.warn('Upload storage fallback:', err); }
-                });
-            }
-
             function buildOfficialFichaHtml(d, meta, forceEvento) {
                 let ex = {};
                 if (d?.respostas_extras) {
@@ -5662,10 +5686,10 @@
                 const isEventoDoc = Boolean(forceEvento);
                 const numMat = clean(d?.id || d?.matricula) || '000000';
                 const projNome = clean(resolvido.projNome || d?.projeto_nome || (typeof currentSelectedProject !== 'undefined' && currentSelectedProject?.nome)) || meta.defaultProjeto || meta.sigla;
-                const nucNome = clean(resolvido.nucNome || d?.nucleo_nome || d?.bairro_escolhido || d?.bairro);
+                const nucNome = clean(resolvido.nucNome || d?.nucleo_nome || d?.local_evento || d?.bairro_escolhido);
                 const modNome = clean(resolvido.modNome || d?.modalidade_nome || d?.modalidade_percurso);
                 const catNome = clean(d?.categoria || d?.distancia_km || '');
-                const cidTreino = clean(d?.cidade_treino || d?.cidade || meta.defaultCidade);
+                const cidTreino = clean(resolvido.cidTreino || d?.cidade_treino || meta.defaultCidade);
                 const turno = clean(d?.turno) || 'Manhã';
 
                 const nAluno = clean(d?.aluno_nome || d?.nome || (typeof currentStudentData !== 'undefined' && currentStudentData?.nome));
@@ -5699,8 +5723,10 @@
 
                 const nat = clean(d?.naturalidade || ex.naturalidade);
                 const ruaBase = clean(d?.endereco || d?.rua);
+                const compEnd = clean(d?.complemento);
                 const bairro = clean(d?.bairro);
-                const ruaFull = ruaBase && bairro && !ruaBase.toLowerCase().includes(bairro.toLowerCase()) ? `${ruaBase} - ${bairro}` : ruaBase;
+                const ruaComComp = ruaBase && compEnd && !ruaBase.toLowerCase().includes(compEnd.toLowerCase()) ? `${ruaBase} (${compEnd})` : ruaBase;
+                const ruaFull = ruaComComp && bairro && !ruaComComp.toLowerCase().includes(bairro.toLowerCase()) ? `${ruaComComp} - ${bairro}` : ruaComComp;
                 const numEnd = clean(d?.numero);
                 const uf = clean(d?.uf) || meta.defaultUf || 'RJ';
                 const cep = clean(d?.cep);
@@ -5719,8 +5745,8 @@
                     const is1 = !isMais3 && (s.includes('ate 1') || s.includes('menos de 1') || s === '1');
                     const is3 = !isMais3 && !is1 && (s.includes('ate 3') || s.includes('1 a 2') || s.includes('2 a 3') || s.includes('1 a 3') || s === '2' || s === '3');
                     return `<span class="opt-item">( <strong>${is1 ? 'X' : '&nbsp;'}</strong> ) Até 1 salário mínimo</span>` +
-                           `<span class="opt-item">( <strong>${is3 ? 'X' : '&nbsp;'}</strong> ) Até 3 salário mínimos</span>` +
-                           `<span class="opt-item">( <strong>${isMais3 ? 'X' : '&nbsp;'}</strong> ) Mais 3 salário mínimos</span>`;
+                           `<span class="opt-item">( <strong>${is3 ? 'X' : '&nbsp;'}</strong> ) Até 3 salários mínimos</span>` +
+                           `<span class="opt-item">( <strong>${isMais3 ? 'X' : '&nbsp;'}</strong> ) Mais de 3 salários mínimos</span>`;
                 };
                 const fmtCamisa = (val) => {
                     const raw = clean(val);
@@ -5894,7 +5920,7 @@
                     .q-list { list-style: disc; padding-left: 16px; margin-top: 4px; }
                     .q-li { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-bottom: 4.5px; font-size: 8.2pt; }
                     .q-li::before { content: "•"; font-weight: 700; margin-left: -13px; margin-right: 7px; }
-                    .qr-footer { display: flex; align-items: center; gap: 12px; margin-top: 10px; padding-top: 7px; border-top: 1px dashed #9ca3af; }
+                    .qr-footer { display: flex; align-items: center; gap: 12px; margin-top: 10px; padding-top: 7px; border-top: 1px solid #cbd5e1; }
                     .qr-footer svg { width: 72px; height: 72px; border: 1px solid #000; flex-shrink: 0; }
                     .page-break { page-break-before: always; padding-top: 2px; }
                     .decl-h { font-size: 7.3pt; font-weight: 700; margin: 5px 0 1.5px 0; }
